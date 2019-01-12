@@ -16,7 +16,7 @@ class wpbme_admin {
 		$settings = [
 			'settings' => sprintf(
 				'<a href="%s">%s</a>',
-				admin_url( 'admin.php?page=plugins&tab=wpbme' ),
+				admin_url( 'options-general.php?page=wpbme_page' ),
 				__( 'Settings', 'wp-benchmark-email' )
 			),
 		];

@@ -6,12 +6,10 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 // Front End Plugin Logic
 class wpbme_frontend {
 
-
 	// Load Translations
 	static function plugins_loaded() {
 		load_plugin_textdomain( 'wp-benchmark-email', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
-
 
 	// AJAX Load Script
 	static function wp_enqueue_scripts() {
@@ -19,7 +17,6 @@ class wpbme_frontend {
 		wp_enqueue_script( 'wpbme_frontend', plugin_dir_url( __FILE__ ) . 'frontend.js', [ 'jquery' ], null );
 		wp_localize_script( 'wpbme_frontend', 'wpbme_ajax_object', [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ] );
 	}
-
 
 	// AJAX Routing
 	static function wp_ajax__wpbme_action() {
@@ -38,7 +35,6 @@ class wpbme_frontend {
 		}
 
 	}
-
 
 	// Match a Contact List - Helper Function
 	static function match_list( $list_slug ) {

@@ -177,6 +177,7 @@ class wpbme_api {
 	static function logger( $url, $request, $response ) {
 		$wpbme_debug = get_option( 'wpbme_debug' );
 		if( ! $wpbme_debug ) { return; }
+		if( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { return; }
 		$logger = wc_get_logger();
 		$context = [ 'source' => 'wp-benchmark-email' ];
 		$request = print_r( $request, true );
