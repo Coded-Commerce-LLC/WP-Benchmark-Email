@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: WP Benchmark Email
- * Plugin URI: https://codedcommerce.com/product/wp-benchmark-email
+ * Plugin Name: Benchmark Email Lite
+ * Plugin URI: https://codedcommerce.com/product/benchmark-email-lite
  * Description: Connects WordPress with Benchmark Email for newsletter sign-up forms and post-to-email campaigns.
  * Version: 3.0-alpha
  * Author: Coded Commerce, LLC
  * Author URI: https://codedcommerce.com
  * Developer: Sean Conklin
  * Developer URI: https://seanconklin.wordpress.com
- * Text Domain: wp-benchmark-email
+ * Text Domain: benchmark-email-lite
  * Domain Path: /languages
  *
  * License: GNU General Public License v3.0

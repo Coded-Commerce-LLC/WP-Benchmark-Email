@@ -1,4 +1,4 @@
-=== WP Benchmark Email ===
+=== Benchmark Email Lite ===
 Contributors: seanconklin, randywsandberg
 Donate link: https://codedcommerce.com/donate
 Tags: Benchmark Email
@@ -21,7 +21,7 @@ Feature: Connect to Benchmark Email ReST API
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/wp-benchmark-email` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/benchmark-email-lite` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
 1. Use the `Plugins->Benchmark Email` screen to configure the plugin.
 

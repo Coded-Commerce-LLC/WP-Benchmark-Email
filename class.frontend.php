@@ -8,7 +8,7 @@ class wpbme_frontend {
 
 	// Load Translations
 	static function plugins_loaded() {
-		load_plugin_textdomain( 'wp-benchmark-email', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'benchmark-email-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
 	// AJAX Load Script
@@ -29,7 +29,7 @@ class wpbme_frontend {
 			case 'get_api_key':
 				if( empty( $_POST['user'] ) || empty( $_POST['pass'] ) ) { return; }
 				$response = wpbme_api::get_api_key( $_POST['user'], $_POST['pass'] );
-				echo $response ? $response : __( 'Error - Please try again', 'wp-benchmark-email' );
+				echo $response ? $response : __( 'Error - Please try again', 'benchmark-email-lite' );
 				wp_die();
 
 		}

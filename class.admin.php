@@ -17,7 +17,7 @@ class wpbme_admin {
 			'settings' => sprintf(
 				'<a href="%s">%s</a>',
 				admin_url( 'options-general.php?page=wpbme_page' ),
-				__( 'Settings', 'wp-benchmark-email' )
+				__( 'Settings', 'benchmark-email-lite' )
 			),
 		];
 		return array_merge( $settings, $links );
@@ -52,11 +52,11 @@ class wpbme_admin {
 						%s &nbsp; <strong style="font-size:1.2em;"><a href="%s">%s</a></strong>
 						<a style="float:right;" href="%s">%s</a>
 					',
-					__( 'Activate our sister product Woo Benchmark Email to view campaign statistics.', 'wp-benchmark-email' ),
+					__( 'Activate our sister product Woo Benchmark Email to view campaign statistics.', 'benchmark-email-lite' ),
 					wpbme_admin::get_sister_activate_link(),
-					__( 'Activate Now', 'wp-benchmark-email' ),
+					__( 'Activate Now', 'benchmark-email-lite' ),
 					wpbme_admin::get_sister_dismiss_link(),
-					__( 'dismiss for 90 days', 'wp-benchmark-email' )
+					__( 'dismiss for 90 days', 'benchmark-email-lite' )
 				);
 
 			// Plugin Not Installed
@@ -66,11 +66,11 @@ class wpbme_admin {
 						%s &nbsp; <strong style="font-size:1.2em;"><a href="%s">%s</a></strong>
 						<a style="float:right;" href="%s">%s</a>
 					',
-					__( 'Install our sister product Woo Benchmark Email to view campaign statistics.', 'wp-benchmark-email' ),
+					__( 'Install our sister product Woo Benchmark Email to view campaign statistics.', 'benchmark-email-lite' ),
 					wpbme_admin::get_sister_install_link(),
-					__( 'Install Now', 'wp-benchmark-email' ),
+					__( 'Install Now', 'benchmark-email-lite' ),
 					wpbme_admin::get_sister_dismiss_link(),
-					__( 'dismiss for 90 days', 'wp-benchmark-email' )
+					__( 'dismiss for 90 days', 'benchmark-email-lite' )
 				);
 			}
 		}
@@ -79,8 +79,8 @@ class wpbme_admin {
 		if( empty( get_option( 'wpbme_key' ) ) ) {
 			$messages[] = sprintf(
 				'%s &nbsp; <strong style="font-size:1.2em;"><a href="admin.php?page=wc-settings&tab=wpbme">%s</a></strong>',
-				__( 'Please configure your API Key to use WP Benchmark Email.', 'wp-benchmark-email' ),
-				__( 'Configure Now', 'wp-benchmark-email' )
+				__( 'Please configure your API Key to use Benchmark Email Lite.', 'benchmark-email-lite' ),
+				__( 'Configure Now', 'benchmark-email-lite' )
 			);
 		}
 

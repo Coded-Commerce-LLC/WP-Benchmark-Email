@@ -1,11 +1,12 @@
-# WP Benchmark Email Woo Documentation
+# Benchmark Email Lite Documentation
 
 ## Features
 
+Newsletter sign up forms
+
 ### Feature: Connect to Benchmark Email ReST API
 
-Separate from optional Benchmark Email Lite plugin, this setting connects to one API key for WooCommerce specific communications.
-Settings located in Plugins > Benchmark Email
+Settings located in Settings > Benchmark Email
 
 ## Support
 

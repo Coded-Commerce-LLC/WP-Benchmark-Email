@@ -133,7 +133,7 @@ class wpbme_api {
 	static function update_partner() {
 		$uri = 'Client/Partner';
 		$body = [ 'PartnerLogin' => 'beautomated' ];
-		$response = wpbme_api::benchmark_query( $uri, 'POST', $body );
+		return wpbme_api::benchmark_query( $uri, 'POST', $body );
 	}
 
 	// Gets Temporary Token And API Key From User / Pass
@@ -179,7 +179,7 @@ class wpbme_api {
 		if( ! $wpbme_debug ) { return; }
 		if( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { return; }
 		$logger = wc_get_logger();
-		$context = [ 'source' => 'wp-benchmark-email' ];
+		$context = [ 'source' => 'benchmark-email-lite' ];
 		$request = print_r( $request, true );
 		$response = print_r( $response, true );
 		$logger->info( "==URL== " . $url, $context );
