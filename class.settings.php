@@ -3,18 +3,21 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
-class wpbme_settings {
 
-	// Admin Menu
-	static function admin_menu() {
-		add_options_page(
-			'Benchmark Email Lite',
-			'Benchmark Email',
-			'manage_options',
-			'wpbme_page',
-			[ 'wpbme_settings', 'wpbme_page' ]
-		);
-	}
+// Admin Settings Link
+add_action( 'admin_menu', function() {
+	add_options_page(
+		'Benchmark Email Lite',
+		'Benchmark Email',
+		'manage_options',
+		'wpbme_page',
+		[ 'wpbme_settings', 'wpbme_page' ]
+	);
+} );
+
+
+// Setings Class
+class wpbme_settings {
 
 	// Renders WP Settings API Forms
 	static function wpbme_page() {
