@@ -129,6 +129,11 @@ class wpbme_api {
 		return wpbme_api::benchmark_query( 'Contact/' );
 	}
 
+	// Get All Signup Forms
+	static function get_forms() {
+		return wpbme_api::benchmark_query( 'SignupForm/' );
+	}
+
 	// Vendor Handshake
 	static function update_partner() {
 		$uri = 'Client/Partner';

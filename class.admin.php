@@ -97,8 +97,31 @@ add_action( 'wp_dashboard_setup', function() {
 	}
 } );
 
+// CPT Page Settings Link
+add_action( 'admin_notices', function() {
+	$screen = get_current_screen();
+	if( 'benchmark-form' == $screen->post_type && 'edit' == $screen->base ) {
+		echo sprintf(
+			'<div class="notice notice-info"><p><a href="%s">%s</a></p></div>',
+			admin_url( 'options-general.php?page=wpbme_page' ),
+			__( 'Benchmark Email Settings', 'benchmark-email-lite' )
+		);
+	}
+} );
 
-// Plugin Settings Link
+// Settings Page CPT Link
+add_action( 'admin_notices', function() {
+	$screen = get_current_screen();
+	if( 'settings_page_wpbme_page' == $screen->id ) {
+		echo sprintf(
+			'<div class="notice notice-info"><p><a href="%s">%s</a></p></div>',
+			admin_url( 'edit.php?post_type=benchmark-form' ),
+			__( 'Benchmark Email Signup Forms', 'benchmark-email-lite' )
+		);
+	}
+} );
+
+// Plugin Page Settings Link
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $links ) {
 	$settings = [
 		'settings' => sprintf(
@@ -110,8 +133,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $lin
 	return array_merge( $settings, $links );
 } );
 
-
-// Frontend Functions
+// Sister Product Notices
 class wpbme_admin {
 
 	// Sister Install Link
