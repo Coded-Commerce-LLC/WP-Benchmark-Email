@@ -3,6 +3,16 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
+// TEST FUNCTION
+add_action( 'admin_init', function() {
+	$body = [ 'Username' => 'seanconklin', 'Password' => '' ];
+	//$response = wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', $body );
+	//if( isset( $response->Response->Token ) ) {
+	//	wpbme_api::token_renew( $response->Response->Token );
+	//}
+	//echo wpbme_api::token_renew( '' );
+	//wpbme_api::goto_ui( '', urlencode( '/Emails#Create' ) );
+} );
 
 // Admin JavaScripts
 add_action( 'admin_enqueue_scripts', function() {

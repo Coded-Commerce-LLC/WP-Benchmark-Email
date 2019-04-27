@@ -203,4 +203,33 @@ class wpbme_api {
 		wpbme_api::logger( $url, $args, $response );
 		return $response;
 	}
+
+	// Renew Temporary Token
+	static function token_renew( $oldtoken ) {
+		$response = wpbme_api::benchmark_query(
+			'Client/AuthenticateUseTempToken', 'POST', null, $oldtoken
+		);
+		if( ! empty( $response->Response->Token ) ) {
+			return $response->Response->Token;
+		}
+	}
+
+	// Redirect to Benchmark UI
+	static function goto_ui( $token, $uri ) {
+		$url = 'https://ui.benchmarkemail.com/xdc/json/login_redirect_using_token ';
+		$args = [ 'token' => $token, 'remember-login' => 1, 'redir' => $uri ];
+
+		// Perform And Log Transmission
+		$response = wp_remote_post( $url, json_encode( $args ) );
+		wpbme_api::logger( $url, $args, $response );
+
+		// Process Response
+		if( is_wp_error( $response ) ) { return $response; }
+		$response = wp_remote_retrieve_body( $response );
+		$response = json_decode( $response );
+		if( ! empty( $response->Response->redirectURL ) ) {
+			wp_redirect( $response->Response->redirectURL );
+			exit;
+		}
+	}
 }
