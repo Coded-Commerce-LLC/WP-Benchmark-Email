@@ -29,11 +29,24 @@ class wpbme_settings {
 
 		// Apply Updates
 		$updated = false;
+
+		// Key Update
 		if( isset( $_POST[ 'wpbme_key' ] ) ) {
 			$wpbme_key = sanitize_text_field( $_POST[ 'wpbme_key' ] );
 			update_option( 'wpbme_key', $wpbme_key );
 			$updated = true;
 		}
+
+		// Tracker Disablement Update
+		if( isset( $_POST[ 'wpbme_tracking_disable' ] ) && $_POST[ 'wpbme_tracking_disable' ] == 'yes' ) {
+			update_option( 'wpbme_tracking_disable', 'yes' );
+			$updated = true;
+		} elseif( isset( $_POST[ 'wpbme_key' ] ) ) {
+			delete_option( 'wpbme_tracking_disable' );
+			$updated = true;
+		}
+
+		// Debug Update
 		if( isset( $_POST[ 'wpbme_debug' ] ) && $_POST[ 'wpbme_debug' ] == 'yes' ) {
 			update_option( 'wpbme_debug', 'yes' );
 			$updated = true;
@@ -41,6 +54,8 @@ class wpbme_settings {
 			delete_option( 'wpbme_debug' );
 			$updated = true;
 		}
+
+		// Update Made
 		if( $updated ) {
 			wpbme_api::update_partner();
 			?>
@@ -51,8 +66,9 @@ class wpbme_settings {
 		}
 
 		// Get Settings
-		$wpbme_key = get_option( 'wpbme_key' );
 		$wpbme_debug = get_option( 'wpbme_debug' );
+		$wpbme_key = get_option( 'wpbme_key' );
+		$wpbme_tracking_disable = get_option( 'wpbme_tracking_disable' );
 
 		// Show Form
 		?>
@@ -66,6 +82,13 @@ class wpbme_settings {
 						<a id="get_api_key" class="button" href="#">
 							<?php _e( 'Get API Key', 'benchmark-email-lite' ); ?>
 						</a>
+					</label>
+				</p>
+				<p>
+					<label>
+						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
+						<input type="checkbox" id="wpbme_tracking_disable" name="wpbme_tracking_disable" value="yes" <?php echo $wpbme_tracking_disable; ?> />
+						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?><br />
 					</label>
 				</p>
 				<p>

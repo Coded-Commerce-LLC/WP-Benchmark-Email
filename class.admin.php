@@ -4,14 +4,14 @@
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
 // TEST FUNCTION
-add_action( 'admin_init', function() {
-	$body = [ 'Username' => 'seanconklin', 'Password' => '' ];
-	//$response = wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', $body );
-	//if( isset( $response->Response->Token ) ) {
-	//	wpbme_api::token_renew( $response->Response->Token );
-	//}
-	//echo wpbme_api::token_renew( '' );
-	//wpbme_api::goto_ui( '', urlencode( '/Emails#Create' ) );
+add_action( 'admin_notices', function() {
+	//echo sprintf(
+	//	'<div class="notice notice-info"><p>%s</p></div>',
+		//wpbme_api::token_renew( '' )
+		//wpbme_api::get_ap_token( '' )
+		//wpbme_api::goto_ui( '', '/Contacts' )
+		//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => 'seanconklin', 'Password' => '' ] )
+	//);
 } );
 
 // Admin JavaScripts

@@ -14,15 +14,15 @@ add_action( 'init', function() {
 			'name' => __( 'Benchmark Signup Forms' ),
 			'not_found' => __( 'No forms were found.' ),
 			'singular_name' => __( 'Benchmark Signup Form' ),
-			//$labels->add_new = 'Add News';
-			//$labels->add_new_item = 'Add News';
-			//$labels->edit_item = 'Edit News';
-			//$labels->new_item = 'News';
-			///$labels->view_item = 'View News';
-			//$labels->search_items = 'Search News';
-			//$labels->not_found_in_trash = 'No News found in Trash';
-			//$labels->all_items = 'All News';
-			//$labels->name_admin_bar = 'News';
+			//$labels->add_new = 'Add Benchmark Form';
+			//$labels->add_new_item = 'Add Benchmark Form';
+			//$labels->edit_item = 'Edit Benchmark Form';
+			//$labels->new_item = 'Benchmark Form';
+			//$labels->view_item = 'View Benchmark Form';
+			//$labels->search_items = 'Search Benchmark Form';
+			//$labels->not_found_in_trash = 'No Benchmark Form found in Trash';
+			//$labels->all_items = 'All Benchmark Form';
+			//$labels->name_admin_bar = 'Benchmark Form';
 		],
 		'menu_icon' => 'dashicons-email',
 		'public' => true,
@@ -49,6 +49,30 @@ add_action( 'wp_enqueue_scripts', function() {
 // I18N
 add_action( 'plugins_loaded', function() {
 	load_plugin_textdomain( 'benchmark-email-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+} );
+
+// JB Tracker
+add_action( 'wp_footer', function() {
+	$tracking_disabled = get_option( 'wpbme_tracking_disable' );
+	if( $tracking_disabled == 'yes' ) { return; }
+	echo sprintf(
+		'
+		<script type="text/javascript">
+		var _paq = _paq || [];
+		( function() {
+			if( window.apScriptInserted ) { return; }
+			_paq.push( [ "clientToken", "%s" ] );
+			var d = document, g = d.createElement( "script" ), s = d.getElementsByTagName( "script" )[0];
+			g.type = "text/javascript";
+			g.async = true;
+			g.defer = true;
+			g.src = "https://prod.benchmarkemail.com/tracker.bundle.js";
+			s.parentNode.insertBefore( g, s );
+			window.apScriptInserted = true;
+		} )();
+		</script>
+		', ''
+	);
 } );
 
 

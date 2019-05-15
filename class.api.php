@@ -216,20 +216,54 @@ class wpbme_api {
 
 	// Redirect to Benchmark UI
 	static function goto_ui( $token, $uri ) {
-		$url = 'https://ui.benchmarkemail.com/xdc/json/login_redirect_using_token ';
-		$args = [ 'token' => $token, 'remember-login' => 1, 'redir' => $uri ];
-
-		// Perform And Log Transmission
-		$response = wp_remote_post( $url, json_encode( $args ) );
+		$url = 'https://ui.benchmarkemail.com/xdc/json/login_redirect_using_token';
+		$body = sprintf(
+			'token=%s&remember-login=1&redir=%s',
+			$token,
+			urlencode( $uri )
+		);
+		$args = [ 'body' => $body ];
+		$response = wp_remote_post( $url, $args );
 		wpbme_api::logger( $url, $args, $response );
+		if( ! is_wp_error( $response ) ) {
+			$response = wp_remote_retrieve_body( $response );
+			$response = json_decode( $response );
+			if( ! empty( $response->redirectURL ) ) {
+				wp_redirect( 'https://ui.benchmarkemail.com' . $response->redirectURL );
+				exit;
+			}
+		}
+	}
 
-		// Process Response
-		if( is_wp_error( $response ) ) { return $response; }
-		$response = wp_remote_retrieve_body( $response );
-		$response = json_decode( $response );
-		if( ! empty( $response->Response->redirectURL ) ) {
-			wp_redirect( $response->Response->redirectURL );
-			exit;
+	// Automation Pro Tracker
+	static function get_ap_token( $token ) {
+
+		// Use Existing Token
+		$ap_token = get_option( 'wpbme_ap_token' );
+		if( $ap_token ) { return $ap_token; }
+
+		// Get New Token
+		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
+		$body = 'token=' . $token;
+		$headers = [
+			'Authorization: OAuth ' . $token,
+			'Content-type: application/x-www-form-urlencoded',
+			'Content-length: ' . strlen( $body ),
+		];
+
+		//$args = [ 'body' => $body, 'headers' => $headers ];
+		//$response = wp_remote_post( $url, $args );
+		//return print_r( $response, true );
+
+		$ch = curl_init( $url );
+		curl_setopt( $ch, CURLOPT_POST, true );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $body );
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+		$response = curl_exec( $ch );
+		if( trim( $response ) ) {
+			update_option( 'wpbme_ap_token', trim( $response ) );
+			return trim( $response );
 		}
 	}
 }
