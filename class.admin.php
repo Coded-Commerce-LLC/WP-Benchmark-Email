@@ -29,7 +29,7 @@ add_action( 'wp_ajax_wpbme_action', function() {
 		case 'get_api_key':
 			if( empty( $_POST['user'] ) || empty( $_POST['pass'] ) ) { return; }
 			$response = wpbme_api::get_api_key( $_POST['user'], $_POST['pass'] );
-			echo $response ? $response : __( 'Error - Please try again', 'benchmark-email-lite' );
+			echo $response ? wp_send_json( $response ) : __( 'Error - Please try again', 'benchmark-email-lite' );
 			wp_die();
 	}
 } );

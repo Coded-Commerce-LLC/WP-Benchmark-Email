@@ -31,7 +31,9 @@ jQuery( document ).ready( function( $ ) {
 
 			// Process Response
 			if( response != '' ) {
-				$( 'input#wpbme_key' ).val( response );
+				$( 'input#wpbme_key' ).val( response.wpbme_key );
+				$( 'input#wpbme_temp_token' ).val( response.wpbme_temp_token );
+				$( 'form[name=wbme_settings_form]' ).submit();
 			}
 		} );
 	} );

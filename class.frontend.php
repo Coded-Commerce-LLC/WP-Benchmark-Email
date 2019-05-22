@@ -71,7 +71,7 @@ add_action( 'wp_footer', function() {
 			window.apScriptInserted = true;
 		} )();
 		</script>
-		', ''
+		', wpbme_api::get_ap_token()
 	);
 } );
 

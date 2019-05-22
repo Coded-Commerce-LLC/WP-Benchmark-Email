@@ -147,12 +147,17 @@ class wpbme_api {
 		// Get Temporary Token From User / Pass
 		$body = [ 'Username' => $user, 'Password' => $pass ];
 		$response = wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', $body );
-		if( ! isset( $response->Response->Token ) ) { return false; }
+		if( ! isset( $response->Response->Token ) ) {
+			return [ 'wpbme_temp_token' => false, 'wpbme_key' => false ];
+		}
 
 		// Use Temporary Token To Get API Key
-		$key = $response->Response->Token;
-		$response = wpbme_api::benchmark_query( 'Client/Setting', 'GET', null, $key );
-		return isset( $response->Response->Token ) ? $response->Response->Token : false;
+		$wpbme_temp_token = $response->Response->Token;
+		$response = wpbme_api::benchmark_query( 'Client/Setting', 'GET', null, $wpbme_temp_token );
+		$wpbme_key = isset( $response->Response->Token ) ? $response->Response->Token : false;
+
+		// Return
+		return [ 'wpbme_temp_token' => $wpbme_temp_token, 'wpbme_key' => $wpbme_key ];
 	}
 
 	// Talk To Benchmark ReST API
@@ -236,17 +241,21 @@ class wpbme_api {
 	}
 
 	// Automation Pro Tracker
-	static function get_ap_token( $token ) {
+	static function get_ap_token() {
 
-		// Use Existing Token
+		// Use Existing Automation Pro Token
 		$ap_token = get_option( 'wpbme_ap_token' );
 		if( $ap_token ) { return $ap_token; }
 
-		// Get New Token
+		// Get Temporary Authentication Token
+		$temp_token = get_option( 'wpbme_temp_token' );
+		if( ! $temp_token ) { return 'NOT_CONNECTED'; }
+
+		// Get New Automation Pro Token
 		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
-		$body = 'token=' . $token;
+		$body = 'token=' . $temp_token;
 		$headers = [
-			'Authorization: OAuth ' . $token,
+			'Authorization: OAuth ' . $temp_token,
 			'Content-type: application/x-www-form-urlencoded',
 			'Content-length: ' . strlen( $body ),
 		];
@@ -262,7 +271,7 @@ class wpbme_api {
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 		$response = curl_exec( $ch );
 		if( trim( $response ) ) {
-			update_option( 'wpbme_ap_token', trim( $response ) );
+			update_option( 'wpbme_ap_token', str_replace( '"', '', trim( $response ) ) );
 			return trim( $response );
 		}
 	}

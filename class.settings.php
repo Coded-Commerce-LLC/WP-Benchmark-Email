@@ -30,10 +30,15 @@ class wpbme_settings {
 		// Apply Updates
 		$updated = false;
 
-		// Key Update
+		// API Key Update
 		if( isset( $_POST[ 'wpbme_key' ] ) ) {
-			$wpbme_key = sanitize_text_field( $_POST[ 'wpbme_key' ] );
-			update_option( 'wpbme_key', $wpbme_key );
+			update_option( 'wpbme_key', sanitize_text_field( $_POST[ 'wpbme_key' ] ) );
+			$updated = true;
+		}
+
+		// Temp Token Update
+		if( isset( $_POST[ 'wpbme_temp_token' ] ) ) {
+			update_option( 'wpbme_temp_token', sanitize_text_field( $_POST[ 'wpbme_temp_token' ] ) );
 			$updated = true;
 		}
 
@@ -68,6 +73,7 @@ class wpbme_settings {
 		// Get Settings
 		$wpbme_debug = get_option( 'wpbme_debug' );
 		$wpbme_key = get_option( 'wpbme_key' );
+		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
 		$wpbme_tracking_disable = get_option( 'wpbme_tracking_disable' );
 
 		// Show Form
@@ -76,14 +82,31 @@ class wpbme_settings {
 			<h2><?php _e( 'Benchmark Email Lite Settings', 'benchmark-email-lite' ); ?></h2>
 			<form name="wbme_settings_form" method="post" action="">
 				<p>
-					<label>
+					<label style="display: block;">
 						<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />
 						<input type="text" size="36" id="wpbme_key" name="wpbme_key" value="<?php echo $wpbme_key; ?>" />
-						<a id="get_api_key" class="button" href="#">
-							<?php _e( 'Get API Key', 'benchmark-email-lite' ); ?>
-						</a>
 					</label>
 				</p>
+				<p>
+					<label style="display: block;">
+						<?php _e( 'Authentication Token', 'benchmark-email-lite' ); ?><br />
+						<input type="text" size="36" id="wpbme_temp_token" name="wpbme_temp_token" value="<?php echo $wpbme_temp_token; ?>" />
+					</label>
+				</p>
+				<p>
+					<?php
+					echo sprintf(
+						'%s<br /><a id="get_api_key" class="button" href="#">%s</a>',
+						$wpbme_key && $wpbme_temp_token
+							? __( 'You are connected!', 'benchmark-email-lite' )
+							: __( 'You are not connected.', 'benchmark-email-lite' ),
+						$wpbme_key && $wpbme_temp_token
+							? __( 'Re-connect to Benchmark', 'benchmark-email-lite' )
+							: __( 'Connect to Benchmark', 'benchmark-email-lite' )
+					);
+						?>
+				</p>
+				<hr />
 				<p>
 					<label>
 						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
