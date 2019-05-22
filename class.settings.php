@@ -80,23 +80,14 @@ class wpbme_settings {
 		?>
 		<div class="wrap">
 			<h2><?php _e( 'Benchmark Email Lite Settings', 'benchmark-email-lite' ); ?></h2>
+			<br />
 			<form name="wbme_settings_form" method="post" action="">
-				<p>
-					<label style="display: block;">
-						<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />
-						<input type="text" size="36" id="wpbme_key" name="wpbme_key" value="<?php echo $wpbme_key; ?>" />
-					</label>
-				</p>
-				<p>
-					<label style="display: block;">
-						<?php _e( 'Authentication Token', 'benchmark-email-lite' ); ?><br />
-						<input type="text" size="36" id="wpbme_temp_token" name="wpbme_temp_token" value="<?php echo $wpbme_temp_token; ?>" />
-					</label>
-				</p>
+				<h3><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h3>
 				<p>
 					<?php
 					echo sprintf(
-						'%s<br /><a id="get_api_key" class="button" href="#">%s</a>',
+						'<strong style="color:%s;">%s</strong><br /><a id="get_api_key" class="button" href="#">%s</a>',
+						$wpbme_key && $wpbme_temp_token ? 'green' : 'red',
 						$wpbme_key && $wpbme_temp_token
 							? __( 'You are connected!', 'benchmark-email-lite' )
 							: __( 'You are not connected.', 'benchmark-email-lite' ),
@@ -106,7 +97,23 @@ class wpbme_settings {
 					);
 						?>
 				</p>
+				<p>
+					<label style="display: block;">
+						<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />
+						<input type="text" size="36" id="wpbme_key" name="wpbme_key" value="<?php echo $wpbme_key; ?>" /><br />
+						<em><?php _e( 'Click button above to set or renew', 'benchmark-email-lite' ); ?></em>
+					</label>
+				</p>
+				<p>
+					<label style="display: block;">
+						<?php _e( 'Authentication Token', 'benchmark-email-lite' ); ?><br />
+						<input type="text" size="36" id="wpbme_temp_token" name="wpbme_temp_token" value="<?php echo $wpbme_temp_token; ?>" /><br />
+						<em><?php _e( 'Click button above to set or renew', 'benchmark-email-lite' ); ?></em>
+					</label>
+				</p>
+				<br />
 				<hr />
+				<h3><?php _e( 'Less Common Settings', 'benchmark-email-lite' ); ?></h3>
 				<p>
 					<label>
 						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
@@ -121,6 +128,8 @@ class wpbme_settings {
 						<?php _e( 'Enable debugging?', 'benchmark-email-lite' ); ?><br />
 					</label>
 				</p>
+				<br />
+				<hr />
 				<p class="submit">
 					<input type="submit" name="Submit" class="button-primary"
 						value="<?php esc_attr_e( 'Save Changes', 'benchmark-email-lite' ) ?>" />
