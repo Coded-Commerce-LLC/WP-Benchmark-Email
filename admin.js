@@ -27,12 +27,15 @@ jQuery( document ).ready( function( $ ) {
 			'pass': pass
 		};
 		$( 'input#wpbme_key' ).val( 'Loading...' );
+		$( 'input#wpbme_temp_token' ).val( 'Loading...' );
+		$( 'input#wpbme_ap_token' ).val( 'Loading...' );
 		$.post( ajaxurl, data, function( response ) {
 
 			// Process Response
 			if( response != '' ) {
 				$( 'input#wpbme_key' ).val( response.wpbme_key );
 				$( 'input#wpbme_temp_token' ).val( response.wpbme_temp_token );
+				$( 'input#wpbme_ap_token' ).val( response.wpbme_ap_token );
 				$( 'form[name=wbme_settings_form]' ).submit();
 			}
 		} );

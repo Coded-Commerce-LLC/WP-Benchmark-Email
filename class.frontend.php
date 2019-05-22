@@ -53,8 +53,16 @@ add_action( 'plugins_loaded', function() {
 
 // JB Tracker
 add_action( 'wp_footer', function() {
+
+	// Handle Disabled
 	$tracking_disabled = get_option( 'wpbme_tracking_disable' );
 	if( $tracking_disabled == 'yes' ) { return; }
+
+	// Handle Disconnected
+	$wpbme_ap_token = get_option( 'wpbme_ap_token' );
+	if( ! $wpbme_ap_token ) { return; }
+
+	// Output Tracker JS
 	echo sprintf(
 		'
 		<script type="text/javascript">
@@ -71,7 +79,7 @@ add_action( 'wp_footer', function() {
 			window.apScriptInserted = true;
 		} )();
 		</script>
-		', wpbme_api::get_ap_token()
+		', $wpbme_ap_token
 	);
 } );
 

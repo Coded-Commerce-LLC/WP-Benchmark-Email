@@ -141,25 +141,6 @@ class wpbme_api {
 		return wpbme_api::benchmark_query( $uri, 'POST', $body );
 	}
 
-	// Gets Temporary Token And API Key From User / Pass
-	static function get_api_key( $user, $pass ) {
-
-		// Get Temporary Token From User / Pass
-		$body = [ 'Username' => $user, 'Password' => $pass ];
-		$response = wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', $body );
-		if( ! isset( $response->Response->Token ) ) {
-			return [ 'wpbme_temp_token' => false, 'wpbme_key' => false ];
-		}
-
-		// Use Temporary Token To Get API Key
-		$wpbme_temp_token = $response->Response->Token;
-		$response = wpbme_api::benchmark_query( 'Client/Setting', 'GET', null, $wpbme_temp_token );
-		$wpbme_key = isset( $response->Response->Token ) ? $response->Response->Token : false;
-
-		// Return
-		return [ 'wpbme_temp_token' => $wpbme_temp_token, 'wpbme_key' => $wpbme_key ];
-	}
-
 	// Talk To Benchmark ReST API
 	static function benchmark_query( $uri = '', $method = 'GET', $body = null, $key = null ) {
 
@@ -197,26 +178,78 @@ class wpbme_api {
 		$logger->debug( "==RESPONSE== " . $response, $context );
 	}
 
-	// Legacy XML-RPC API
-	static function benchmark_query_legacy() {
-		require_once( ABSPATH . WPINC . '/class-IXR.php' );
-		$url = 'https://api.benchmarkemail.com/1.3/';
-		$client = new IXR_Client( $url, false, 443, 15 );
-		$args = func_get_args();
-		call_user_func_array( [ $client, 'query' ], $args );
-		$response = $client->getResponse();
-		wpbme_api::logger( $url, $args, $response );
-		return $response;
+	// Gets Temporary Token And API Key From User / Pass
+	static function authenticate( $user, $pass ) {
+
+		// Get New Temporary Token From User / Pass
+		$response = self::benchmark_query(
+			'Client/Authenticate',
+			'POST',
+			[ 'Username' => $user, 'Password' => $pass ]
+		);
+		if( ! isset( $response->Response->Token ) ) { return; }
+		$wpbme_temp_token = trim( $response->Response->Token );
+
+		// Use Temporary Token To Get API Key
+		$response = wpbme_api::benchmark_query(
+			'Client/Setting', 'GET', null, $wpbme_temp_token
+		);
+		if( ! isset( $response->Response->Token ) ) { return; }
+		$wpbme_key = trim( $response->Response->Token );
+
+		// Use Temporary Token To Get AP Token
+		$wpbme_ap_token = self::get_ap_token( $wpbme_temp_token );
+
+		// Return
+		return [
+			'wpbme_ap_token' => $wpbme_ap_token,
+			'wpbme_temp_token' => $wpbme_temp_token,
+			'wpbme_key' => $wpbme_key
+		];
 	}
 
-	// Renew Temporary Token
-	static function token_renew( $oldtoken ) {
+	// Get New Automation Pro Token
+	static function get_ap_token( $wpbme_temp_token ) {
+		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
+		$body = 'token=' . $wpbme_temp_token;
+		$headers = [
+			'Authorization: OAuth ' . $wpbme_temp_token,
+			'Content-type: application/x-www-form-urlencoded',
+			'Content-length: ' . strlen( $body ),
+		];
+		//$args = [ 'body' => $body, 'headers' => $headers ];
+		//$response = wp_remote_post( $url, $args );
+		//return print_r( $response, true );
+		$ch = curl_init( $url );
+		curl_setopt( $ch, CURLOPT_POST, true );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $body );
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+		$response = curl_exec( $ch );
+		if( ! $response ) { return; }
+		$wpbme_ap_token = str_replace( '"', '', trim( $response ) );
+		return $wpbme_ap_token;
+	}
+
+	// Maybe Renew Temporary Token
+	static function authenticate_maybe_renew() {
+		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
+		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
+
+		// Still Valid
+		if( $wpbme_temp_token_ttl >= current_time( 'timestamp' ) ) {
+			return $wpbme_temp_token;
+		}
+
+		// Renew Now
 		$response = wpbme_api::benchmark_query(
 			'Client/AuthenticateUseTempToken', 'POST', null, $oldtoken
 		);
-		if( ! empty( $response->Response->Token ) ) {
-			return $response->Response->Token;
-		}
+		if( empty( $response->Response->Token ) ) { return; }
+		$wpbme_temp_token = trim( $response->Response->Token );
+		update_option( 'wpbme_temp_token', $wpbme_temp_token );
+		update_option( 'wpbme_temp_token_ttl', current_time( 'timestamp' ) + 86400 );
+		return $wpbme_temp_token;
 	}
 
 	// Redirect to Benchmark UI
@@ -240,39 +273,15 @@ class wpbme_api {
 		}
 	}
 
-	// Automation Pro Tracker
-	static function get_ap_token() {
-
-		// Use Existing Automation Pro Token
-		$ap_token = get_option( 'wpbme_ap_token' );
-		if( $ap_token ) { return $ap_token; }
-
-		// Get Temporary Authentication Token
-		$temp_token = get_option( 'wpbme_temp_token' );
-		if( ! $temp_token ) { return 'NOT_CONNECTED'; }
-
-		// Get New Automation Pro Token
-		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
-		$body = 'token=' . $temp_token;
-		$headers = [
-			'Authorization: OAuth ' . $temp_token,
-			'Content-type: application/x-www-form-urlencoded',
-			'Content-length: ' . strlen( $body ),
-		];
-
-		//$args = [ 'body' => $body, 'headers' => $headers ];
-		//$response = wp_remote_post( $url, $args );
-		//return print_r( $response, true );
-
-		$ch = curl_init( $url );
-		curl_setopt( $ch, CURLOPT_POST, true );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $body );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
-		$response = curl_exec( $ch );
-		if( trim( $response ) ) {
-			update_option( 'wpbme_ap_token', str_replace( '"', '', trim( $response ) ) );
-			return trim( $response );
-		}
+	// Legacy XML-RPC API
+	static function benchmark_query_legacy() {
+		require_once( ABSPATH . WPINC . '/class-IXR.php' );
+		$url = 'https://api.benchmarkemail.com/1.3/';
+		$client = new IXR_Client( $url, false, 443, 15 );
+		$args = func_get_args();
+		call_user_func_array( [ $client, 'query' ], $args );
+		$response = $client->getResponse();
+		wpbme_api::logger( $url, $args, $response );
+		return $response;
 	}
 }

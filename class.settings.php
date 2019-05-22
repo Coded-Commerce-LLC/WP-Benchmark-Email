@@ -42,6 +42,12 @@ class wpbme_settings {
 			$updated = true;
 		}
 
+		// Automation Pro Token Update
+		if( isset( $_POST[ 'wpbme_ap_token' ] ) ) {
+			update_option( 'wpbme_ap_token', esc_attr( $_POST[ 'wpbme_ap_token' ] ) );
+			$updated = true;
+		}
+
 		// Tracker Disablement Update
 		if( isset( $_POST[ 'wpbme_tracking_disable' ] ) && $_POST[ 'wpbme_tracking_disable' ] == 'yes' ) {
 			update_option( 'wpbme_tracking_disable', 'yes' );
@@ -71,6 +77,7 @@ class wpbme_settings {
 		}
 
 		// Get Settings
+		$wpbme_ap_token = get_option( 'wpbme_ap_token' );
 		$wpbme_debug = get_option( 'wpbme_debug' );
 		$wpbme_key = get_option( 'wpbme_key' );
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
@@ -101,14 +108,21 @@ class wpbme_settings {
 					<label style="display: block;">
 						<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />
 						<input type="text" size="36" id="wpbme_key" name="wpbme_key" value="<?php echo $wpbme_key; ?>" /><br />
-						<em><?php _e( 'Click button above to set or renew', 'benchmark-email-lite' ); ?></em>
+						<em><?php _e( 'Click the button above to set or renew', 'benchmark-email-lite' ); ?></em>
 					</label>
 				</p>
 				<p>
 					<label style="display: block;">
 						<?php _e( 'Authentication Token', 'benchmark-email-lite' ); ?><br />
 						<input type="text" size="36" id="wpbme_temp_token" name="wpbme_temp_token" value="<?php echo $wpbme_temp_token; ?>" /><br />
-						<em><?php _e( 'Click button above to set or renew', 'benchmark-email-lite' ); ?></em>
+						<em><?php _e( 'Click the button above to set or renew', 'benchmark-email-lite' ); ?></em>
+					</label>
+				</p>
+				<p>
+					<label style="display: block;">
+						<?php _e( 'Automation Pro Token', 'benchmark-email-lite' ); ?><br />
+						<input type="text" size="36" id="wpbme_ap_token" name="wpbme_ap_token" value="<?php echo $wpbme_ap_token; ?>" /><br />
+						<em><?php _e( 'Click the button above to set or renew', 'benchmark-email-lite' ); ?></em>
 					</label>
 				</p>
 				<br />
