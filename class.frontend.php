@@ -11,9 +11,9 @@ add_action( 'init', function() {
 		'hierarchical' => true,
 		'labels' => [
 			'menu_name' => __( 'Benchmark' ),
-			'name' => __( 'Benchmark Signup Forms' ),
+			'name' => __( 'Benchmark Email Signup Forms' ),
 			'not_found' => __( 'No forms were found.' ),
-			'singular_name' => __( 'Benchmark Signup Form' ),
+			'singular_name' => __( 'Benchmark Email Signup Form' ),
 			//$labels->add_new = 'Add Benchmark Form';
 			//$labels->add_new_item = 'Add Benchmark Form';
 			//$labels->edit_item = 'Edit Benchmark Form';

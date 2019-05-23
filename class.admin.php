@@ -5,13 +5,15 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 
 // TEST FUNCTION
 add_action( 'admin_notices', function() {
-	//echo sprintf(
-	//	'<div class="notice notice-info"><p>%s</p></div>',
-		//wpbme_api::token_renew( '' )
-		//wpbme_api::get_ap_token( '' )
-		//wpbme_api::goto_ui( '', '/Contacts' )
-		//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => 'seanconklin', 'Password' => '' ] )
-	//);
+	/*
+		echo sprintf(
+			'<div class="notice notice-info"><p>%s</p></div>',
+			//wpbme_api::token_renew( '' )
+			//wpbme_api::get_ap_token( '' )
+			//wpbme_api::goto_ui( '', '/Contacts' )
+			//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => 'seanconklin', 'Password' => '' ] )
+		);
+	*/
 } );
 
 // Admin JavaScripts
@@ -111,9 +113,20 @@ add_action( 'admin_notices', function() {
 	$screen = get_current_screen();
 	if( 'benchmark-form' == $screen->post_type && 'edit' == $screen->base ) {
 		echo sprintf(
-			'<div class="notice notice-info"><p><a href="%s">%s</a></p></div>',
-			admin_url( 'options-general.php?page=wpbme_page' ),
-			__( 'Benchmark Email Settings', 'benchmark-email-lite' )
+			'
+				<div class="notice notice-info">
+					<p>
+						<strong>%s</strong>:
+						<a href="%s">%s</a> |
+						<a href="%s">%s</a>
+					</p>
+				</div>
+			',
+			__( 'Plugin Menu', 'benchmark-email-lite' ),
+			admin_url( 'options-general.php?page=wpbme_settings' ),
+			__( 'Settings', 'benchmark-email-lite' ),
+			admin_url( 'edit.php?post_type=benchmark-form&page=wpbme_interface' ),
+			__( 'Interface', 'benchmark-email-lite' )
 		);
 	}
 } );
@@ -121,11 +134,19 @@ add_action( 'admin_notices', function() {
 // Settings Page CPT Link
 add_action( 'admin_notices', function() {
 	$screen = get_current_screen();
-	if( 'settings_page_wpbme_page' == $screen->id ) {
+	if( 'settings_page_wpbme_settings' == $screen->id ) {
 		echo sprintf(
-			'<div class="notice notice-info"><p><a href="%s">%s</a></p></div>',
+			'
+				<div class="notice notice-info">
+					<p>
+						<strong>%s</strong>:
+						<a href="%s">%s</a>
+					</p>
+				</div>
+			',
+			__( 'Plugin Menu', 'benchmark-email-lite' ),
 			admin_url( 'edit.php?post_type=benchmark-form' ),
-			__( 'Benchmark Email Signup Forms', 'benchmark-email-lite' )
+			__( 'Signup Forms', 'benchmark-email-lite' )
 		);
 	}
 } );
@@ -135,15 +156,45 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $lin
 	$settings = [
 		'settings' => sprintf(
 			'<a href="%s">%s</a>',
-			admin_url( 'options-general.php?page=wpbme_page' ),
+			admin_url( 'options-general.php?page=wpbme_settings' ),
 			__( 'Settings', 'benchmark-email-lite' )
 		),
 	];
 	return array_merge( $settings, $links );
 } );
 
-// Sister Product Notices
+// Adds UI Controller Page If Connected
+add_action( 'admin_menu', function() {
+	$wpbme_temp_token = wpbme_api::authenticate_ui_maybe_renew();
+	if( ! $wpbme_temp_token ) { return; }
+	add_submenu_page(
+		'edit.php?post_type=benchmark-form',
+		'Interface',
+		'Interface',
+		'manage_options',
+		'wpbme_interface',
+		[ 'wpbme_admin', 'page_interface' ]
+	);
+} );
+
 class wpbme_admin {
+
+	// Page For UI Frame
+	static function page_interface() {
+		$redirect_url = wpbme_api::authenticate_ui( '/Contacts' );
+		echo sprintf(
+			'
+				<div class="wrap">
+					<h2>%s</h2>
+					<br />
+					<iframe src="%s" style="%s"></iframe>
+				</div>
+			',
+			__( 'Benchmark Email Lite Interface', 'benchmark-email-lite' ),
+			$redirect_url,
+			'width: 100%; height: 1000px;'
+		);
+	}
 
 	// Sister Install Link
 	static function get_sister_install_link() {

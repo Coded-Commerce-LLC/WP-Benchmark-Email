@@ -164,11 +164,11 @@ class wpbme_api {
 		return isset( $response->Response->Data ) ? $response->Response->Data : $response;
 	}
 
-	// Log Communications
+	// Log API Communications
 	static function logger( $url, $request, $response ) {
 		$wpbme_debug = get_option( 'wpbme_debug' );
 		if( ! $wpbme_debug ) { return; }
-		if( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { return; }
+		if( ! function_exists( 'wc_get_logger' ) ) { return; }
 		$logger = wc_get_logger();
 		$context = [ 'source' => 'benchmark-email-lite' ];
 		$request = print_r( $request, true );
@@ -208,6 +208,54 @@ class wpbme_api {
 		];
 	}
 
+	// Authenticate And Redirect Benchmark UI
+	static function authenticate_ui( $destination_uri ) {
+
+		// Get Maybe Renew Temp Token
+		$wpbme_temp_token = self::authenticate_ui_maybe_renew();
+
+		// Authenticate And Get Redirect
+		$endpoint = 'https://ui.benchmarkemail.com';
+		$url = $endpoint . '/xdc/json/login_redirect_using_token';
+		$body = sprintf(
+			'token=%s&remember-login=1&redir=%s',
+			$wpbme_temp_token,
+			urlencode( $destination_uri )
+		);
+		$args = [ 'body' => $body ];
+		$response = wp_remote_post( $url, $args );
+		wpbme_api::logger( $url, $args, $response );
+
+		// Process Response
+		if( ! is_wp_error( $response ) ) {
+			$response = wp_remote_retrieve_body( $response );
+			$response = json_decode( $response );
+			return empty( $response->redirectURL )
+				? false : $endpoint . $response->redirectURL;
+		}
+	}
+
+	// Maybe Renew Temporary Token
+	static function authenticate_ui_maybe_renew() {
+		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
+		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
+
+		// Still Valid
+		if( $wpbme_temp_token_ttl >= current_time( 'timestamp' ) ) {
+			return $wpbme_temp_token;
+		}
+
+		// Renew Now
+		$response = wpbme_api::benchmark_query(
+			'Client/AuthenticateUseTempToken', 'POST', null, $wpbme_temp_token
+		);
+		if( empty( $response->Response->Token ) ) { return; }
+		$wpbme_temp_token = trim( $response->Response->Token );
+		update_option( 'wpbme_temp_token', $wpbme_temp_token );
+		update_option( 'wpbme_temp_token_ttl', current_time( 'timestamp' ) + 86400 );
+		return $wpbme_temp_token;
+	}
+
 	// Get New Automation Pro Token
 	static function get_ap_token( $wpbme_temp_token ) {
 		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
@@ -229,48 +277,6 @@ class wpbme_api {
 		if( ! $response ) { return; }
 		$wpbme_ap_token = str_replace( '"', '', trim( $response ) );
 		return $wpbme_ap_token;
-	}
-
-	// Maybe Renew Temporary Token
-	static function authenticate_maybe_renew() {
-		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
-		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
-
-		// Still Valid
-		if( $wpbme_temp_token_ttl >= current_time( 'timestamp' ) ) {
-			return $wpbme_temp_token;
-		}
-
-		// Renew Now
-		$response = wpbme_api::benchmark_query(
-			'Client/AuthenticateUseTempToken', 'POST', null, $oldtoken
-		);
-		if( empty( $response->Response->Token ) ) { return; }
-		$wpbme_temp_token = trim( $response->Response->Token );
-		update_option( 'wpbme_temp_token', $wpbme_temp_token );
-		update_option( 'wpbme_temp_token_ttl', current_time( 'timestamp' ) + 86400 );
-		return $wpbme_temp_token;
-	}
-
-	// Redirect to Benchmark UI
-	static function goto_ui( $token, $uri ) {
-		$url = 'https://ui.benchmarkemail.com/xdc/json/login_redirect_using_token';
-		$body = sprintf(
-			'token=%s&remember-login=1&redir=%s',
-			$token,
-			urlencode( $uri )
-		);
-		$args = [ 'body' => $body ];
-		$response = wp_remote_post( $url, $args );
-		wpbme_api::logger( $url, $args, $response );
-		if( ! is_wp_error( $response ) ) {
-			$response = wp_remote_retrieve_body( $response );
-			$response = json_decode( $response );
-			if( ! empty( $response->redirectURL ) ) {
-				wp_redirect( 'https://ui.benchmarkemail.com' . $response->redirectURL );
-				exit;
-			}
-		}
 	}
 
 	// Legacy XML-RPC API
