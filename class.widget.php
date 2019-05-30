@@ -27,7 +27,7 @@ class wpbme_widget extends WP_Widget {
 			'echo' => false,
 			'id' => esc_attr( $this->get_field_id( 'post_id' ) ),
 			'name' => esc_attr( $this->get_field_name( 'post_id' ) ),
-			'post_type' => 'benchmark-form',
+			'post_type' => 'benchmark',
 			'selected' => empty( $instance['post_id'] ) ? '' : $instance['post_id'],
 			'show_option_none' => __( 'Please select', 'benchmark-email-lite' ),
 		] );
@@ -35,7 +35,7 @@ class wpbme_widget extends WP_Widget {
 			echo sprintf(
 				'<p>%s <a href="%s">%s</a></p>',
 				__( 'Please design a signup form first!', 'benchmark-email-lite' ),
-				'/wp-admin/post-new.php?post_type=benchmark-form',
+				admin_url( 'admin.php?page=wpbme_interface&tab=Listbuilder' ),
 				__( 'Click here to design a signup form.', 'benchmark-email-lite' )
 			);
 		}

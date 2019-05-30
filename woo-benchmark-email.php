@@ -21,6 +21,7 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 // Include Object Files
 require_once( 'class.admin.php' );
 require_once( 'class.api.php' );
+require_once( 'class.cron.php' );
 require_once( 'class.frontend.php' );
 require_once( 'class.settings.php' );
 require_once( 'class.widget.php' );

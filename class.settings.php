@@ -90,11 +90,16 @@ class wpbme_settings {
 				<h3><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h3>
 				<p>
 					<?php
+					$link_to_ui = sprintf(
+						' <a href="%s">%s</a>',
+						admin_url( 'admin.php?page=wpbme_interface' ),
+						__( 'Proceed to Benchmark Interface', 'benchmark-email-lite' )
+					);
 					echo sprintf(
 						'<strong style="color:%s;">%s</strong><br /><a id="get_api_key" class="button" href="#">%s</a>',
 						$wpbme_key && $wpbme_temp_token ? 'green' : 'red',
 						$wpbme_key && $wpbme_temp_token
-							? __( 'You are connected!', 'benchmark-email-lite' )
+							? __( 'You are connected!', 'benchmark-email-lite' ) . $link_to_ui
 							: __( 'You are not connected.', 'benchmark-email-lite' ),
 						$wpbme_key && $wpbme_temp_token
 							? __( 'Re-connect to Benchmark', 'benchmark-email-lite' )
@@ -130,16 +135,21 @@ class wpbme_settings {
 					<label>
 						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_tracking_disable" name="wpbme_tracking_disable" value="yes" <?php echo $wpbme_tracking_disable; ?> />
-						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?><br />
+						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?>
 					</label>
 				</p>
+				<?php if( class_exists( 'WooCommerce' ) ) { ?>
 				<p>
 					<label>
 						<?php $wpbme_debug = $wpbme_debug == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_debug" name="wpbme_debug" value="yes" <?php echo $wpbme_debug; ?> />
-						<?php _e( 'Enable debugging?', 'benchmark-email-lite' ); ?><br />
+						<?php _e( 'Enable debugging?', 'benchmark-email-lite' ); ?>
+						<a href="<?php echo admin_url( 'admin.php?page=wc-status&tab=logs' ); ?>">
+							<?php _e( 'Logs are stored in WooCommerce', 'benchmark-email-lite' ); ?>
+						</a>
 					</label>
 				</p>
+				<?php } ?>
 				<br />
 				<hr />
 				<p class="submit">

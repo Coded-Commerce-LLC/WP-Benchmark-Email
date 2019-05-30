@@ -240,6 +240,9 @@ class wpbme_api {
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
 		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
 
+		// Missing
+		if( ! $wpbme_temp_token || ! $wpbme_temp_token_ttl ) { return; }
+
 		// Still Valid
 		if( $wpbme_temp_token_ttl >= current_time( 'timestamp' ) ) {
 			return $wpbme_temp_token;

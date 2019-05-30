@@ -3,42 +3,6 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
-// Init: Define Custom Post Type For Signup Forms
-add_action( 'init', function() {
-	$args = [
-		'capability_type' => 'page',
-		'has_archive' => true,
-		'hierarchical' => true,
-		'labels' => [
-			'menu_name' => __( 'Benchmark' ),
-			'name' => __( 'Benchmark Email Signup Forms' ),
-			'not_found' => __( 'No forms were found.' ),
-			'singular_name' => __( 'Benchmark Email Signup Form' ),
-			//$labels->add_new = 'Add Benchmark Form';
-			//$labels->add_new_item = 'Add Benchmark Form';
-			//$labels->edit_item = 'Edit Benchmark Form';
-			//$labels->new_item = 'Benchmark Form';
-			//$labels->view_item = 'View Benchmark Form';
-			//$labels->search_items = 'Search Benchmark Form';
-			//$labels->not_found_in_trash = 'No Benchmark Form found in Trash';
-			//$labels->all_items = 'All Benchmark Form';
-			//$labels->name_admin_bar = 'Benchmark Form';
-		],
-		'menu_icon' => 'dashicons-email',
-		'public' => true,
-		'query_var' => true,
-		'rewrite' => [ 'slug' => 'benchmark-form' ],
-		'show_ui' => true,
-		'supports' => [
-			'title',
-			'editor',
-			'revisions',
-			'page-attributes',
-		],
-	];
-	register_post_type( 'benchmark-form', $args );
-} );
-
 // Enqueue Scripts: Frontend JS
 add_action( 'wp_enqueue_scripts', function() {
 	if( ! function_exists( 'is_checkout' ) || ! is_checkout() ) { return; }
