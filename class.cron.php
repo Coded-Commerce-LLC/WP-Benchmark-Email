@@ -6,6 +6,6 @@ add_action( 'init', function() {
 		wp_schedule_event( time(), 'twicedaily', 'wpbme_token_renew' );
 	}
 	add_action( 'wpbme_token_renew', function() {
-		wpbme_api::authenticate_ui_maybe_renew();
+		wpbme_api::authenticate_ui_renew();
 	} );
 } );

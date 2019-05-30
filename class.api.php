@@ -9,129 +9,14 @@ class wpbme_api {
 	// Endpoint
 	static $url = 'https://clientapi.benchmarkemail.com/';
 
-	// Adds a Contact To a List
-	static function add_contact( $listID, $email, $args = [] ) {
-		extract( $args );
-
-		// Build Body
-		$body = [
-			'Data' => [
-				'Email' => $email,
-				'EmailPerm' => 1,
-				'Field19' => current_time( 'm/d/Y' ),
-				'IPAddress' => wpbme_api::get_client_ip(),
-			],
-		];
-
-		// Order Details
-		if( isset( $company ) ) { $body['Data']['Field9'] = $company; }
-		if( isset( $first ) ) { $body['Data']['FirstName'] = $first; }
-		if( isset( $last ) ) { $body['Data']['LastName'] = $last; }
-		if( isset( $phone ) ) { $body['Data']['Field6'] = $phone; }
-		if( isset( $product1 ) ) { $body['Data']['Field21'] = $product1; }
-		if( isset( $product2 ) ) { $body['Data']['Field22'] = $product2; }
-		if( isset( $product3 ) ) { $body['Data']['Field23'] = $product3; }
-		if( isset( $total ) ) { $body['Data']['Field24'] = $total; }
-		if( isset( $url ) ) { $body['Data']['Field18'] = $url; }
-
-		// Order History
-		if( isset( $first_order_date ) ) { $body['Data']['Field25'] = $first_order_date; }
-		if( isset( $total_spent ) ) { $body['Data']['Field26'] = $total_spent; }
-		if( isset( $total_orders ) ) { $body['Data']['Field27'] = $total_orders; }
-
-		// Billing Address
-		if( isset( $b_address ) ) { $body['Data']['Field1'] = $b_address; }
-		if( isset( $b_city ) ) { $body['Data']['Field2'] = $b_city; }
-		if( isset( $b_state ) ) { $body['Data']['Field3'] = $b_state; }
-		if( isset( $b_zip ) ) { $body['Data']['Field4'] = $b_zip; }
-		if( isset( $b_country ) ) { $body['Data']['Field5'] = $b_country; }
-
-		// Shipping Address
-		if( isset( $s_address ) ) { $body['Data']['Field13'] = $s_address; }
-		if( isset( $s_city ) ) { $body['Data']['Field14'] = $s_city; }
-		if( isset( $s_state ) ) { $body['Data']['Field15'] = $s_state; }
-		if( isset( $s_zip ) ) { $body['Data']['Field16'] = $s_zip; }
-		if( isset( $s_country ) ) { $body['Data']['Field17'] = $s_country; }
-
-		// Search Existing Contacts
-		$matches = wpbme_api::find_contact( $email );
-		foreach( $matches as $match ) {
-
-			// Found Match, Update Record
-			if( $match->ContactMasterID == $listID ) {
-				$uri = 'Contact/' . $listID . '/ContactDetails/' . $match->ID;
-				$response = wpbme_api::benchmark_query( $uri, 'PATCH', $body );
-				return isset( $response->ID ) ? intval( $response->ID ) : $response;
-			}
-		}
-
-		// Add New Contact
-		$uri = 'Contact/' . $listID . '/ContactDetails';
-		$response = wpbme_api::benchmark_query( $uri, 'POST', $body );
-
-		// Response
-		return isset( $response->ID ) ? intval( $response->ID ) : $response;
-	}
-
-	// Find Contact ID On a List
-	static function find_contact( $email ) {
-		$email = str_replace( '+', '%2B', $email );
-		return wpbme_api::benchmark_query( 'Contact/ContactDetails?Search=' . $email );
-	}
-
-	// Deletes a Contact
-	static function delete_contact( $listID, $contactID ) {
-		$body = [ 'ContactID' => $contactID, 'ListID' => $listID ];
-		return wpbme_api::benchmark_query( 'Contact/ContactDetails', 'DELETE', $body );
-	}
-
-	// Find a Contact By Email, Then Delete
-	static function delete_contact_by_email( $list_slug, $listID, $email ) {
-		$results = self::find_contact( $email );
-		if( ! is_array( $results ) ) { return; }
-		foreach( $results as $row ) {
-			if( $row->ListName == wpbme_frontend::$list_names[$list_slug] ) {
-				wpbme_api::delete_contact( $listID, $row->ID );
-			}
-		}
-	}
-
-	// Adds a Contact List
-	static function add_list( $name ) {
-		$body = [ 'Data' => [ 'Description' => $name, 'Name' => $name ] ];
-		$response = wpbme_api::benchmark_query( 'Contact/', 'POST', $body );
-		return empty( $response->ID ) ? $response : intval( $response->ID );
-	}
-
-	// Get Contact From a List
-	static function get_contact( $listID, $contactID ) {
-		return wpbme_api::benchmark_query( 'Contact/' . $listID . '/ContactDetails/' . $contactID );
-	}
-
-	// Gets Client IP Address
-	static function get_client_ip() {
-		if( isset( $_SERVER[ 'HTTP_CLIENT_IP' ] ) )
-			return $_SERVER[ 'HTTP_CLIENT_IP' ];
-		if( isset( $_SERVER[ 'HTTP_X_FORWARDED_FOR' ] ) )
-			return $_SERVER[ 'HTTP_X_FORWARDED_FOR' ];
-		if( isset( $_SERVER[ 'HTTP_X_FORWARDED' ] ) )
-			return $_SERVER[ 'HTTP_X_FORWARDED' ];
-		if( isset( $_SERVER[ 'HTTP_FORWARDED_FOR' ] ) )
-			return $_SERVER[ 'HTTP_FORWARDED_FOR' ];
-		if( isset( $_SERVER[ 'HTTP_FORWARDED' ] ) )
-			return $_SERVER[ 'HTTP_FORWARDED' ];
-		if( isset( $_SERVER[ 'REMOTE_ADDR' ] ) )
-			return $_SERVER[ 'REMOTE_ADDR' ];
-	}
-
-	// Get All Contact Lists
-	static function get_lists() {
-		return wpbme_api::benchmark_query( 'Contact/' );
-	}
-
 	// Get All Signup Forms
 	static function get_forms() {
 		return wpbme_api::benchmark_query( 'SignupForm/' );
+	}
+
+	// Get JS Link For Signup Form
+	static function get_form_data( $id ) {
+		return self::benchmark_query( '/SignupForm/' . $id );
 	}
 
 	// Vendor Handshake
@@ -209,12 +94,8 @@ class wpbme_api {
 	}
 
 	// Authenticate And Redirect Benchmark UI
-	static function authenticate_ui( $destination_uri ) {
-
-		// Get Maybe Renew Temp Token
-		$wpbme_temp_token = self::authenticate_ui_maybe_renew();
-
-		// Authenticate And Get Redirect
+	static function authenticate_ui_redirect( $destination_uri ) {
+		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
 		$endpoint = 'https://ui.benchmarkemail.com';
 		$url = $endpoint . '/xdc/json/login_redirect_using_token';
 		$body = sprintf(
@@ -236,19 +117,8 @@ class wpbme_api {
 	}
 
 	// Maybe Renew Temporary Token
-	static function authenticate_ui_maybe_renew() {
+	static function authenticate_ui_renew() {
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
-		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
-
-		// Missing
-		if( ! $wpbme_temp_token || ! $wpbme_temp_token_ttl ) { return; }
-
-		// Still Valid
-		if( $wpbme_temp_token_ttl >= current_time( 'timestamp' ) ) {
-			return $wpbme_temp_token;
-		}
-
-		// Renew Now
 		$response = wpbme_api::benchmark_query(
 			'Client/AuthenticateUseTempToken', 'POST', null, $wpbme_temp_token
 		);

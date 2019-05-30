@@ -3,17 +3,6 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
-// Admin Settings Link
-add_action( 'admin_menu', function() {
-	add_options_page(
-		'Benchmark Email Lite',
-		'Benchmark Email',
-		'manage_options',
-		'wpbme_settings',
-		[ 'wpbme_settings', 'page_settings' ]
-	);
-} );
-
 // Setings Class
 class wpbme_settings {
 
@@ -84,7 +73,7 @@ class wpbme_settings {
 		// Show Form
 		?>
 		<div class="wrap">
-			<h2><?php _e( 'Benchmark Email Lite Settings', 'benchmark-email-lite' ); ?></h2>
+			<h2><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h2>
 			<br />
 			<form name="wbme_settings_form" method="post" action="">
 				<h3><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h3>
@@ -96,7 +85,10 @@ class wpbme_settings {
 						__( 'Proceed to Benchmark Interface', 'benchmark-email-lite' )
 					);
 					echo sprintf(
-						'<strong style="color:%s;">%s</strong><br /><a id="get_api_key" class="button" href="#">%s</a>',
+						'
+							<p><strong style="color:%s;">%s</strong></p>
+							<p><a id="get_api_key" class="button" href="#">%s</a></p>
+						',
 						$wpbme_key && $wpbme_temp_token ? 'green' : 'red',
 						$wpbme_key && $wpbme_temp_token
 							? __( 'You are connected!', 'benchmark-email-lite' ) . $link_to_ui

@@ -121,12 +121,35 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $lin
 // Adds UI Controller Page
 add_action( 'admin_menu', function() {
 	add_menu_page(
-		'Interface',
+		'Benchmark',
 		'Benchmark',
 		'manage_options',
 		'wpbme_interface',
 		[ 'wpbme_admin', 'page_interface' ],
 		'dashicons-email'
+	);
+	add_submenu_page(
+		'wpbme_interface',
+		'Interface',
+		'Interface',
+		'manage_options',
+		'wpbme_interface',
+		[ 'wpbme_settings', 'page_settings' ]
+	);
+	add_submenu_page(
+		'wpbme_interface',
+		'Settings',
+		'Settings',
+		'manage_options',
+		'wpbme_settings',
+		[ 'wpbme_settings', 'page_settings' ]
+	);
+	add_submenu_page(
+		'wpbme_interface',
+		'Signup Form Widgets',
+		'Signup Form Widgets',
+		'manage_options',
+		'widgets.php',
 	);
 } );
 
@@ -135,8 +158,8 @@ class wpbme_admin {
 
 	// Page Body For Benchmark UI
 	static function page_interface() {
-		$tab = empty( $_GET['tab'] ) ? '/Emails' : '/' . $_GET['tab'];
-		$redirect_url = wpbme_api::authenticate_ui( $tab );
+		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
+		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
 		if( ! $redirect_url ) {
 			wp_redirect( admin_url( 'options-general.php?page=wpbme_settings' ) );
 		}
@@ -148,7 +171,7 @@ class wpbme_admin {
 					<iframe src="%s" style="%s">Loading . . .</iframe>
 				</div>
 			',
-			'Benchmark Email',
+			'Benchmark Email Interface',
 			$redirect_url,
 			'width: 100%; height: 1000px;'
 		);

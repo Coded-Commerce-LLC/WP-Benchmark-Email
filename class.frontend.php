@@ -46,33 +46,3 @@ add_action( 'wp_footer', function() {
 		', $wpbme_ap_token
 	);
 } );
-
-
-// Front End Plugin Logic
-class wpbme_frontend {
-
-	// Match a Contact List - Helper Function
-	static function match_list( $list_slug ) {
-
-		// Load Lists, If Not Already Loaded
-		$lists = wpbme_api::get_lists();
-
-		// Handle Error Retrieving Lists
-		if( ! is_array( $lists ) ) { return false; }
-
-		// Loop Contact Lists
-		foreach( $lists as $list ) {
-
-			// Skip Bad Result
-			if( empty( $list->ID ) || empty( $list->Name ) ) { continue; }
-
-			// Handle a Match
-			if( $list->Name == wpbme_frontend::$list_names[$list_slug] ) {
-				return $list->ID;
-			}
-		}
-
-		// Add Missing Contact List
-		return wpbme_api::add_list( wpbme_frontend::$list_names[$list_slug] );
-	}
-}
