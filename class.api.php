@@ -6,29 +6,51 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 // ReST API Class
 class wpbme_api {
 
-	// Endpoint
-	static $url = 'https://clientapi.benchmarkemail.com/';
+	// Endpoints
+	static
+		$url_api = 'https://clientapi.benchmarkemail.com/',
+		$url_ui = 'https://ui.benchmarkemail.com/',
+		$url_apro = 'https://aproapi.benchmarkemail.com/',
+		$url_xml = 'https://api.benchmarkemail.com/';
 
 	// Get All Signup Forms
 	static function get_forms() {
-		return wpbme_api::benchmark_query( 'SignupForm/' );
+		return self::benchmark_query( 'SignupForm/' );
 	}
 
 	// Get JS Link For Signup Form
 	static function get_form_data( $id ) {
-		return self::benchmark_query( '/SignupForm/' . $id );
+		return self::benchmark_query( 'SignupForm/' . $id );
 	}
 
 	// Vendor Handshake
 	static function update_partner() {
 		$uri = 'Client/Partner';
 		$body = [ 'PartnerLogin' => 'beautomated' ];
-		return wpbme_api::benchmark_query( $uri, 'POST', $body );
+		return self::benchmark_query( $uri, 'POST', $body );
+	}
+
+	// Get All Contact Lists
+	static function get_lists() {
+		return self::benchmark_query( 'Contact/' );
 	}
 
 	// Creates Email Campaign
-	static function create_email( $name, $subject, $from_name, $from_email, $to_list, $content='' ) {
+	static function create_email( $name, $subject, $from_name, $from_email, $content='' ) {
 		$uri = 'Emails/';
+		$lists = self::get_lists();
+		if( ! is_array( $lists ) ) { return; }
+		$to_lists = [];
+		$protected_lists = [
+			'Master Unsubscribe List',
+			'WooCommerce Abandoned Carts',
+			'WooCommerce Customers'
+		];
+		foreach( $lists as $list ) {
+			if( empty( $list->ID ) ) { continue; }
+			if( in_array( $list->Name, $protected_lists ) ) { continue; }
+			$to_lists[] = [ 'ID' => $list->ID ];
+		}
 		$body = [
 			'Detail' => [
 				'Name' => $name,
@@ -36,15 +58,16 @@ class wpbme_api {
 				'FromName' => $from_name,
 				'FromEmail' => $from_email,
 				'ReplyEmail' => $from_email,
-				'Version' => '3',
-				'ContactLists' => [ [ 'ID' => $to_list ] ],
+				'Version' => 3,
+				'ContactLists' => $to_lists,
 				'TemplateContent' => $content,
-				//TemplateText
-				//IsManualText
-				//TemplateCode
+				'LayoutID' => 1,
+				//'TemplateText' => $content,
+				//'IsManualText' => 1,
+				//'TemplateCode' => $content,
 			]
 		];
-		return wpbme_api::benchmark_query( $uri, 'POST', $body );
+		return self::benchmark_query( $uri, 'POST', $body );
 	}
 
 	// Talk To Benchmark ReST API
@@ -55,11 +78,11 @@ class wpbme_api {
 		$key = $key ? $key : get_option( 'wpbme_key' );
 		$headers = [ 'AuthToken' => $key, 'Content-Type' => 'application/json' ];
 		$args = [ 'body' => $body, 'headers' => $headers, 'method' => $method ];
-		$url = wpbme_api::$url . $uri;
+		$url = self::$url_api . $uri;
 
 		// Perform And Log Transmission
 		$response = wp_remote_request( $url, $args );
-		wpbme_api::logger( $url, $args, $response );
+		self::logger( $url, $args, $response );
 
 		// Process Response
 		if( is_wp_error( $response ) ) { return $response; }
@@ -97,7 +120,7 @@ class wpbme_api {
 		$wpbme_temp_token = trim( $response->Response->Token );
 
 		// Use Temporary Token To Get API Key
-		$response = wpbme_api::benchmark_query(
+		$response = self::benchmark_query(
 			'Client/Setting', 'GET', null, $wpbme_temp_token
 		);
 		if( ! isset( $response->Response->Token ) ) { return; }
@@ -117,8 +140,7 @@ class wpbme_api {
 	// Authenticate And Redirect Benchmark UI
 	static function authenticate_ui_redirect( $destination_uri ) {
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
-		$endpoint = 'https://ui.benchmarkemail.com';
-		$url = $endpoint . '/xdc/json/login_redirect_using_token';
+		$url = self::$url_ui . 'xdc/json/login_redirect_using_token';
 		$body = sprintf(
 			'token=%s&remember-login=1&redir=%s',
 			$wpbme_temp_token,
@@ -126,21 +148,21 @@ class wpbme_api {
 		);
 		$args = [ 'body' => $body ];
 		$response = wp_remote_post( $url, $args );
-		wpbme_api::logger( $url, $args, $response );
+		self::logger( $url, $args, $response );
 
 		// Process Response
 		if( ! is_wp_error( $response ) ) {
 			$response = wp_remote_retrieve_body( $response );
 			$response = json_decode( $response );
 			return empty( $response->redirectURL )
-				? false : $endpoint . $response->redirectURL;
+				? false : self::$url_ui . $response->redirectURL;
 		}
 	}
 
 	// Maybe Renew Temporary Token
 	static function authenticate_ui_renew() {
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
-		$response = wpbme_api::benchmark_query(
+		$response = self::benchmark_query(
 			'Client/AuthenticateUseTempToken', 'POST', null, $wpbme_temp_token
 		);
 		if( empty( $response->Response->Token ) ) { return; }
@@ -152,7 +174,7 @@ class wpbme_api {
 
 	// Get New Automation Pro Token
 	static function get_ap_token( $wpbme_temp_token ) {
-		$url = 'https://aproapi.benchmarkemail.com/api/v1/token/gettoken';
+		$url = self::$url_apro . 'api/v1/token/gettoken';
 		$body = 'token=' . $wpbme_temp_token;
 		$headers = [
 			'Authorization: OAuth ' . $wpbme_temp_token,
@@ -176,12 +198,12 @@ class wpbme_api {
 	// Legacy XML-RPC API
 	static function benchmark_query_legacy() {
 		require_once( ABSPATH . WPINC . '/class-IXR.php' );
-		$url = 'https://api.benchmarkemail.com/1.3/';
+		$url = self::$url_xml . '1.3/';
 		$client = new IXR_Client( $url, false, 443, 15 );
 		$args = func_get_args();
 		call_user_func_array( [ $client, 'query' ], $args );
 		$response = $client->getResponse();
-		wpbme_api::logger( $url, $args, $response );
+		self::logger( $url, $args, $response );
 		return $response;
 	}
 }

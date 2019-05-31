@@ -167,16 +167,12 @@ class wpbme_admin {
 			$content = $post->post_content;
 			$content = apply_filters( 'the_content', $content );
 			$newemail = wpbme_api::create_email(
-				current_time( 'timestamp' ) . ' Name',
-				current_time( 'timestamp' ) . ' Subject',
-				current_time( 'timestamp' ) . ' From',
+				$post->post_title . ' ' . current_time( 'mysql' ),
+				$post->post_title,
+				$current_user->display_name,
 				$current_user->user_email,
-				15838208,
 				$content
 			);
-			if( ! empty( $newemail->ID ) ) {
-				$tab = '/Emails/Edit?' . $newemail->ID;
-			}
 		}
 
 		// Get Authenticated Redirect
@@ -191,13 +187,25 @@ class wpbme_admin {
 				<div class="wrap">
 					<h2>%s</h2>
 					<br />
-					<iframe src="%s" style="%s">Loading . . .</iframe>
+					<iframe id="wpbme_interface" src="%s" style="%s">Loading . . .</iframe>
 				</div>
 			',
 			'Benchmark Email Interface',
 			$redirect_url,
 			'width: 100%; height: 1000px;'
 		);
+
+		// Handle Email Campaign Redirection
+		if( ! empty( $newemail->ID ) ) {
+			echo sprintf(
+				'<script type="text/javascript">
+				jQuery( document ).ready( function( $ ) {
+					$( "iframe#wpbme_interface" ).attr( "src", "%s" ); 
+				} );
+				</script>',
+				wpbme_api::$url_ui . 'Emails/Edit?e=' . $newemail->ID
+			);
+		}
 	}
 
 	// Sister Install Link
