@@ -1,5 +1,8 @@
 <?php
 
+// Exit If Accessed Directly
+if( ! defined( 'ABSPATH' ) ) { exit; }
+
 // Renew Temporary Auth Token Twice Daily
 add_action( 'init', function() {
 	if ( ! wp_next_scheduled( 'wpbme_token_renew' ) ) {

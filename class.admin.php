@@ -111,7 +111,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $lin
 	$settings = [
 		'settings' => sprintf(
 			'<a href="%s">%s</a>',
-			admin_url( 'options-general.php?page=wpbme_settings' ),
+			admin_url( 'admin.php?page=wpbme_settings' ),
 			__( 'Settings', 'benchmark-email-lite' )
 		),
 	];
@@ -134,7 +134,7 @@ add_action( 'admin_menu', function() {
 		'Interface',
 		'manage_options',
 		'wpbme_interface',
-		[ 'wpbme_settings', 'page_settings' ]
+		[ 'wpbme_admin', 'page_interface' ]
 	);
 	add_submenu_page(
 		'wpbme_interface',
@@ -159,10 +159,33 @@ class wpbme_admin {
 	// Page Body For Benchmark UI
 	static function page_interface() {
 		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
+
+		// Handle P2C
+		if( ! empty( $_GET['post'] ) && intval( $_GET['post'] ) ) {
+			$current_user = wp_get_current_user();
+			$post = get_post( $_GET['post'] );
+			$content = $post->post_content;
+			$content = apply_filters( 'the_content', $content );
+			$newemail = wpbme_api::create_email(
+				current_time( 'timestamp' ) . ' Name',
+				current_time( 'timestamp' ) . ' Subject',
+				current_time( 'timestamp' ) . ' From',
+				$current_user->user_email,
+				15838208,
+				$content
+			);
+			if( ! empty( $newemail->ID ) ) {
+				$tab = '/Emails/Edit?' . $newemail->ID;
+			}
+		}
+
+		// Get Authenticated Redirect
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
 		if( ! $redirect_url ) {
-			wp_redirect( admin_url( 'options-general.php?page=wpbme_settings' ) );
+			wp_redirect( admin_url( 'admin.php?page=wpbme_settings' ) );
 		}
+
+		// Output
 		echo sprintf(
 			'
 				<div class="wrap">
@@ -210,3 +233,13 @@ class wpbme_admin {
 	}
 
 }
+
+// Post To Campaign
+add_filter( 'post_row_actions', function( $actions, $post ) {
+	$actions['benchmark_p2c'] = sprintf(
+		'<a href="%s">%s</a>',
+		admin_url( 'admin.php?page=wpbme_interface&post=' . $post->ID ),
+		__( 'Create Email Campaign', 'benchmark-email-lite' )
+	);
+	return $actions;
+}, 10, 2 );

@@ -26,6 +26,27 @@ class wpbme_api {
 		return wpbme_api::benchmark_query( $uri, 'POST', $body );
 	}
 
+	// Creates Email Campaign
+	static function create_email( $name, $subject, $from_name, $from_email, $to_list, $content='' ) {
+		$uri = 'Emails/';
+		$body = [
+			'Detail' => [
+				'Name' => $name,
+				'Subject' => $subject,
+				'FromName' => $from_name,
+				'FromEmail' => $from_email,
+				'ReplyEmail' => $from_email,
+				'Version' => '3',
+				'ContactLists' => [ [ 'ID' => $to_list ] ],
+				'TemplateContent' => $content,
+				//TemplateText
+				//IsManualText
+				//TemplateCode
+			]
+		];
+		return wpbme_api::benchmark_query( $uri, 'POST', $body );
+	}
+
 	// Talk To Benchmark ReST API
 	static function benchmark_query( $uri = '', $method = 'GET', $body = null, $key = null ) {
 

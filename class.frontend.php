@@ -3,13 +3,6 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
-// Enqueue Scripts: Frontend JS
-add_action( 'wp_enqueue_scripts', function() {
-	if( ! function_exists( 'is_checkout' ) || ! is_checkout() ) { return; }
-	wp_enqueue_script( 'wpbme_frontend', plugin_dir_url( __FILE__ ) . 'frontend.js', [ 'jquery' ], null );
-	wp_localize_script( 'wpbme_frontend', 'wpbme_ajax_object', [ 'ajax_url' => admin_url( 'admin-ajax.php' ) ] );
-} );
-
 // I18N
 add_action( 'plugins_loaded', function() {
 	load_plugin_textdomain( 'benchmark-email-lite', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
