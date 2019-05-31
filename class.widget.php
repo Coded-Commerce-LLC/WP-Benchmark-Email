@@ -16,7 +16,14 @@ class wpbme_widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		$form = wpbme_api::get_form_data( $instance['post_id'] );
+		$id = $instance['post_id'];
+		$formdata = get_transient( 'wpbme_js_' . $instance['post_id'] );
+		if( $formdata ) {
+			echo $formdata->JSCode;
+			return;
+		}
+		$form = wpbme_api::get_form_data( $id );
+		set_transient( 'wpbme_js_' . $id, $form, 86400 );
 		echo $form->JSCode;
 	}
 
