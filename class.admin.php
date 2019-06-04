@@ -8,10 +8,8 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 	add_action( 'admin_notices', function() {
 		echo sprintf(
 			'<div class="notice notice-info"><p>%s</p></div>',
-			//wpbme_api::token_renew( '' )
-			//wpbme_api::get_ap_token( '' )
-			//wpbme_api::goto_ui( '', '/Contacts' )
-			//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => 'seanconklin', 'Password' => '' ] )
+			//wpbme_api::authenticate_ui_renew()
+			//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => '', 'Password' => '' ] )
 		);
 	} );
 */

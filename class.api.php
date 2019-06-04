@@ -140,6 +140,14 @@ class wpbme_api {
 	// Authenticate And Redirect Benchmark UI
 	static function authenticate_ui_redirect( $destination_uri ) {
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
+		$wpbme_temp_token_ttl = get_option( 'wpbme_temp_token_ttl' );
+
+		// Maybe Refresh Auth Token
+		if( $wpbme_temp_token_ttl < current_time( 'timestamp' ) ) {
+			self::authenticate_ui_renew();
+		}
+
+		// Request UI Auth Redirect
 		$url = self::$url_ui . 'xdc/json/login_redirect_using_token';
 		$body = sprintf(
 			'token=%s&remember-login=1&redir=%s',
@@ -165,7 +173,15 @@ class wpbme_api {
 		$response = self::benchmark_query(
 			'Client/AuthenticateUseTempToken', 'POST', null, $wpbme_temp_token
 		);
-		if( empty( $response->Response->Token ) ) { return; }
+
+		// Handle Error
+		if( empty( $response->Response->Token ) ) {
+			delete_option( 'wpbme_temp_token' );
+			delete_option( 'wpbme_temp_token_ttl' );
+			return;
+		}
+
+		// Success
 		$wpbme_temp_token = trim( $response->Response->Token );
 		update_option( 'wpbme_temp_token', $wpbme_temp_token );
 		update_option( 'wpbme_temp_token_ttl', current_time( 'timestamp' ) + 86400 );
