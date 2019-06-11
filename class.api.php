@@ -36,7 +36,7 @@ class wpbme_api {
 	}
 
 	// Creates Email Campaign
-	static function create_email( $name, $subject, $from_name, $from_email, $content='' ) {
+	static function create_email( $name, $subject, $from_name, $from_email, $post_id='' ) {
 		$uri = 'Emails/';
 		$lists = self::get_lists();
 		if( ! is_array( $lists ) ) { return; }
@@ -53,15 +53,23 @@ class wpbme_api {
 		}
 		$body = [
 			'Detail' => [
+				'Version' => 420,
+				'EmailType' => 'DD',
+				'LayoutID' => 10,
+				//'HasPermissionReminderMessage' => 1,
+				'HasWebpageVersion' => 1,
 				'Name' => $name,
 				'Subject' => $subject,
 				'FromName' => $from_name,
 				'FromEmail' => $from_email,
 				'ReplyEmail' => $from_email,
-				'Version' => 3,
 				'ContactLists' => $to_lists,
-				'TemplateContent' => $content,
-				'LayoutID' => 1,
+				'IsRSS'	=> 1,
+				'RSSURL' => get_permalink( $post_id ) . 'feed/',
+				//'RSSSchedule'	=> '',
+				//'RSSinterval'	=> '',
+				//'IsRSSActive' => 1,
+				//'TemplateContent' => $content,
 				//'TemplateText' => $content,
 				//'IsManualText' => 1,
 				//'TemplateCode' => $content,

@@ -2,14 +2,13 @@
 
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
-
 // TEST FUNCTION
 /*
 	add_action( 'admin_notices', function() {
 		echo sprintf(
 			'<div class="notice notice-info"><p>%s</p></div>',
 			//wpbme_api::authenticate_ui_renew()
-			//wpbme_api::benchmark_query( 'Client/Authenticate', 'POST', [ 'Username' => '', 'Password' => '' ] )
+			print_r( wpbme_api::benchmark_query( 'Emails/', 'GET' ), false )
 		);
 	} );
 */
@@ -169,7 +168,7 @@ class wpbme_admin {
 				$post->post_title,
 				$current_user->display_name,
 				$current_user->user_email,
-				$content
+				$post->ID
 			);
 		}
 
