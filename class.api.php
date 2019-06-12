@@ -65,7 +65,9 @@ class wpbme_api {
 				'ReplyEmail' => $from_email,
 				'ContactLists' => $to_lists,
 				'IsRSS'	=> 1,
-				'RSSURL' => get_permalink( $post_id ) . 'feed/',
+				'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
+					? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
+					: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
 				//'RSSSchedule'	=> '',
 				//'RSSinterval'	=> '',
 				//'IsRSSActive' => 1,
@@ -107,12 +109,13 @@ class wpbme_api {
 		if( ! $wpbme_debug ) { return; }
 		if( ! function_exists( 'wc_get_logger' ) ) { return; }
 		$logger = wc_get_logger();
-		$context = [ 'source' => 'benchmark-email-lite' ];
-		$request = print_r( $request, true );
-		$response = print_r( $response, true );
-		$logger->info( "==URL== " . $url, $context );
-		$logger->debug( "==REQUEST== " . $request, $context );
-		$logger->debug( "==RESPONSE== " . $response, $context );
+		$details = sprintf(
+			"==URL==\n%s\n\n==REQUEST==\n%s\n\n==RESPONSE==\n%s",
+			$url,
+			print_r( $request, true ),
+			print_r( $response, true )
+		);
+		$logger->info( $details, [ 'source' => 'benchmark-email-lite' ] );
 	}
 
 	// Gets Temporary Token And API Key From User / Pass
