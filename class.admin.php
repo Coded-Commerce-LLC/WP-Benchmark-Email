@@ -60,7 +60,7 @@ add_action( 'wp_dashboard_setup', function() {
 					%s &nbsp; <strong style="font-size:1.2em;"><a href="%s">%s</a></strong>
 					<a style="float:right;" href="%s">%s</a>
 				',
-				__( 'Activate our sister product Woo Benchmark Email to view campaign statistics.', 'benchmark-email-lite' ),
+				__( 'Activate our sister product Woo Benchmark Email to enable eCommerce tracking.', 'benchmark-email-lite' ),
 				wpbme_admin::get_sister_activate_link(),
 				__( 'Activate Now', 'benchmark-email-lite' ),
 				wpbme_admin::get_sister_dismiss_link(),
@@ -74,7 +74,7 @@ add_action( 'wp_dashboard_setup', function() {
 					%s &nbsp; <strong style="font-size:1.2em;"><a href="%s">%s</a></strong>
 					<a style="float:right;" href="%s">%s</a>
 				',
-				__( 'Install our sister product Woo Benchmark Email to view campaign statistics.', 'benchmark-email-lite' ),
+				__( 'Install our sister product Woo Benchmark Email to enable eCommerce tracking.', 'benchmark-email-lite' ),
 				wpbme_admin::get_sister_install_link(),
 				__( 'Install Now', 'benchmark-email-lite' ),
 				wpbme_admin::get_sister_dismiss_link(),
@@ -86,9 +86,9 @@ add_action( 'wp_dashboard_setup', function() {
 	// Message If Plugin Isn't Configured
 	if( empty( get_option( 'wpbme_key' ) ) ) {
 		$messages[] = sprintf(
-			'%s &nbsp; <strong style="font-size:1.2em;"><a href="admin.php?page=wc-settings&tab=wpbme">%s</a></strong>',
-			__( 'Please configure your API Key to use Benchmark Email Lite.', 'benchmark-email-lite' ),
-			__( 'Configure Now', 'benchmark-email-lite' )
+			'%s &nbsp; <strong style="font-size:1.2em;"><a href="admin.php?page=wpbme_settings">%s</a></strong>',
+			__( 'Please connect to Benchmark to use the Benchmark Email Lite plugin.', 'benchmark-email-lite' ),
+			__( 'Connect Now', 'benchmark-email-lite' )
 		);
 	}
 
