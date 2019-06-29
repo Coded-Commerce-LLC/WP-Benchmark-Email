@@ -174,7 +174,7 @@ class wpbme_api {
 			$response = wp_remote_retrieve_body( $response );
 			$response = json_decode( $response );
 			return empty( $response->redirectURL )
-				? false : self::$url_ui . $response->redirectURL;
+				? false : untrailingslashit( self::$url_ui ) . $response->redirectURL;
 		}
 	}
 

@@ -184,12 +184,16 @@ class wpbme_admin {
 				<div class="wrap">
 					<h2>%s</h2>
 					<br />
-					<iframe id="wpbme_interface" src="%s" style="%s">Loading . . .</iframe>
+					<p><a href="%s" target="BMEUI">%s</a></p>
+					<iframe id="wpbme_interface" src="%s" style="%s">%s</iframe>
 				</div>
 			',
 			'Benchmark Email Interface',
 			$redirect_url,
-			'width: 100%; height: 1000px;'
+			__( 'Click to use a new tab if the below fails to load properly in your browser.', 'benchmark-email-lite' ),
+			$redirect_url,
+			'width: 100%; height: 1000px;',
+			__( 'Loading...', 'benchmark-email-lite' )
 		);
 
 		// Handle Email Campaign Redirection
