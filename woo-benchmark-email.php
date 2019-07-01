@@ -24,4 +24,6 @@ require_once( 'class.api.php' );
 require_once( 'class.cron.php' );
 require_once( 'class.frontend.php' );
 require_once( 'class.settings.php' );
+require_once( 'class.sister.php' );
+require_once( 'class.upgrade.php' );
 require_once( 'class.widget.php' );

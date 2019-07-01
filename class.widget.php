@@ -3,6 +3,7 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
+// Register Widget
 add_action( 'widgets_init', function() {
 	register_widget( 'wpbme_widget' );
 } );
@@ -10,6 +11,7 @@ add_action( 'widgets_init', function() {
 // WP Widget Class
 class wpbme_widget extends WP_Widget {
 
+	// Widget Construct
 	public function __construct() {
 		$widget_ops = array( 
 			'classname' => 'wpbme_widget',
@@ -18,18 +20,13 @@ class wpbme_widget extends WP_Widget {
 		parent::__construct( 'wpbme_widget', 'Benchmark Signup Form', $widget_ops );
 	}
 
+	// Widget Display
 	public function widget( $args, $instance ) {
-		$id = $instance['post_id'];
-		$formdata = get_transient( 'wpbme_js_' . $instance['post_id'] );
-		if( $formdata ) {
-			echo $formdata->JSCode;
-			return;
-		}
-		$form = wpbme_api::get_form_data( $id );
-		set_transient( 'wpbme_js_' . $id, $form, 86400 );
-		echo $form->JSCode;
+		$form_id = $instance['post_id'];
+		echo wpbme_frontend::get_signup_form( $form_id );
 	}
 
+	// Widget Settings
 	public function form( $instance ) {
 
 		// Query Existing Forms
@@ -76,6 +73,7 @@ class wpbme_widget extends WP_Widget {
 		);
 	}
 
+	// Widget Save
 	public function update( $new_instance, $old_instance ) {
 		return $new_instance;
 	}
