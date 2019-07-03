@@ -43,7 +43,16 @@ add_action( 'wp_footer', function() {
 // Shortcode
 add_shortcode( 'benchmark-email-lite', function( $atts ) {
 	$form_id = isset( $atts['form_id'] ) ? intval( $atts['form_id'] ) : '';
-	return wpbme_frontend::get_signup_form( $form_id );
+	if( $form_id ) {
+		return wpbme_frontend::get_signup_form( $form_id );
+	}
+	$widget_id = isset( $atts['widget_id'] ) ? intval( $atts['widget_id'] ) : '';
+	if( $widget_id ) {
+		$form_id = get_option( 'wpbme_legacy_widget_' . $widget_id );
+		if( $form_id ) {
+			return wpbme_frontend::get_signup_form( $form_id );
+		}
+	}
 } );
 
 // Front End Class

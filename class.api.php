@@ -35,6 +35,46 @@ class wpbme_api {
 		return self::benchmark_query( 'Contact/' );
 	}
 
+	// Creates Signup Form
+	static function create_form( $list_id, $list_name, $form_name, $introduction, $button, $fields ) {
+
+		// Make Form
+		$body = [
+			'Detail' => [
+				'Name' => $form_name,
+				'Lists' => [ [ 'ID' => $list_id, 'Name' => $list_name ] ],
+				'Version' => 4,
+			]
+		];
+		$response = self::benchmark_query( 'SignupForm/', 'POST', $body );
+		$form_id = isset( $response->ID ) ? intval( $response->ID ) : '';
+		if( ! $form_id ) { return; }
+
+		// Set Form Details
+		$set_fields = [];
+		foreach( $fields as $i => $field ) {
+			$set_fields[] = [
+				'Column' => $i,
+				'Name' => $field['name'],
+				'Label' => $field['label'],
+				'IsEmail' => ( $field['name'] == 'Email' ) ? 1 : 0,
+				'IsRequired' => $field['required'] ? 1 : 0,
+				'Type' => 1, //( $field['name'] == 'Email' ) ? 'Email' : 'Text',
+				//'Order' => $i,
+			];
+		}
+		$body = [
+			'ID' => $form_id,
+			'Detail' => [
+				'Button' => $button,
+				'Fields' => $set_fields,
+				'Introduction' => $introduction,
+			]
+		];
+		$response = self::benchmark_query( 'SignupForm/' . $form_id, 'PATCH', $body );
+		return $form_id;
+	}
+
 	// Creates Email Campaign
 	static function create_email( $name, $subject, $from_name, $from_email, $post_id='' ) {
 		$uri = 'Emails/';

@@ -6,11 +6,22 @@ if( ! defined( 'ABSPATH' ) ) { exit; }
 // TEST FUNCTION
 /*
 	add_action( 'admin_notices', function() {
-		echo sprintf(
-			'<div class="notice notice-info"><p>%s</p></div>',
-			//wpbme_api::authenticate_ui_renew()
-			print_r( wpbme_api::benchmark_query( 'Emails/', 'GET' ), false )
-		);
+		$body = [
+			'ID' => 1191807,
+			'Detail' => [
+				'Button' => 'Test Button',
+				'Fields' => [
+					[
+						'Column' => 3, 'IsEmail' => 0, 'IsRequired' => 1,
+						'Name' => 'Last Name',
+						'Label' => 'Your Last Name',
+					]
+				],
+				'Introduction' => 'Test Introduction Message Here.',
+			]
+		];
+		$response = wpbme_api::benchmark_query( 'SignupForm/1191807', 'PATCH', $body );
+		echo sprintf( '<div class="notice notice-info"><p>%s</p></div>', print_r( $response, true ) );
 	} );
 */
 
