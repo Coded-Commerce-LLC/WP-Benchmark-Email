@@ -139,7 +139,18 @@ class wpbme_api {
 		$response = wp_remote_retrieve_body( $response );
 		$response = json_decode( $response );
 
-		// Return
+		// Handle Errors
+		if( isset( $response->Response->Error ) && is_array( $response->Response->Error ) ) {
+			$errors = '';
+			foreach( $response->Response->Error as $error ) {
+				$errors .= isset( $error->Message ) ? $error->Message : '';
+				$errors .= ' ';
+			}
+			$errors = trim( $errors );
+			if( $errors ) { return $errors; }
+		}
+
+		// Return Success
 		return isset( $response->Response->Data ) ? $response->Response->Data : $response;
 	}
 

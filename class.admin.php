@@ -106,6 +106,18 @@ class wpbme_admin {
 				$current_user->user_email,
 				$post->ID
 			);
+			if( ! empty( $newemail->ID ) ) {
+				$tab = '/Emails/Edit?e=' . $newemail->ID;
+			} else {
+				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
+					$tab = '/ConfirmedEmails';
+					echo sprintf(
+						'<div class="notice notice-error"><p>%s<br /><strong>%s</strong></p></div>',
+						__( 'Please verify the email address you are signed into WordPress with using the interface below, then re-attempt creating your email.', 'benchmark-email-lite' ),
+						$current_user->user_email
+					);
+				}
+			}
 		}
 
 		// Get Authenticated Redirect
@@ -124,27 +136,13 @@ class wpbme_admin {
 					<iframe id="wpbme_interface" src="%s" style="%s">%s</iframe>
 				</div>
 			',
-			'Benchmark Email Interface',
+			__( 'Benchmark Email Interface', 'benchmark-email-lite' ),
 			$redirect_url,
 			__( 'Click to use a new tab if the below fails to load properly in your browser.', 'benchmark-email-lite' ),
 			$redirect_url,
 			'width: 100%; height: 1000px;',
 			__( 'Loading...', 'benchmark-email-lite' )
 		);
-
-		// Handle Email Campaign Redirection
-		if( ! empty( $newemail->ID ) ) {
-			echo sprintf(
-				'
-					<script type="text/javascript">
-					jQuery( document ).ready( function( $ ) {
-						$( "iframe#wpbme_interface" ).attr( "src", "%s" ); 
-					} );
-					</script>
-				',
-				wpbme_api::$url_ui . 'Emails/Edit?e=' . $newemail->ID
-			);
-		}
 	}
 
 	// Displays Shortcodes
