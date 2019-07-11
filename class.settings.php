@@ -73,10 +73,10 @@ class wpbme_settings {
 		// Show Form
 		?>
 		<div class="wrap">
-			<h2><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h2>
+			<h1><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h1>
 			<br />
 			<form name="wbme_settings_form" method="post" action="">
-				<h3><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h3>
+				<h2><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h2>
 				<p>
 					<?php
 					$link_to_ui = sprintf(

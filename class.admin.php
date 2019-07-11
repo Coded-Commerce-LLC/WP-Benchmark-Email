@@ -130,7 +130,7 @@ class wpbme_admin {
 		echo sprintf(
 			'
 				<div class="wrap">
-					<h2>%s</h2>
+					<h1>%s</h1>
 					<br />
 					<p><a href="%s" target="BMEUI">%s</a></p>
 					<iframe id="wpbme_interface" src="%s" style="%s">%s</iframe>
@@ -138,7 +138,7 @@ class wpbme_admin {
 			',
 			__( 'Benchmark Email Interface', 'benchmark-email-lite' ),
 			$redirect_url,
-			__( 'Click to use a new tab if the below fails to load properly in your browser.', 'benchmark-email-lite' ),
+			__( 'Click to use a new tab - if the below fails to load properly in your browser.', 'benchmark-email-lite' ),
 			$redirect_url,
 			'width: 100%; height: 1000px;',
 			__( 'Loading...', 'benchmark-email-lite' )
@@ -161,19 +161,19 @@ class wpbme_admin {
 		// Has Forms
 		echo sprintf(
 			'
-				<h2>%s</h2>
+				<br /><h1>%s</h1>
 				<p>%s</p>
 			',
 			__( 'Shortcodes for Pages and Posts', 'benchmark-email-lite' ),
-			__( 'Use these to place a signup form on specific pages or posts within their content bodies.', 'benchmark-email-lite' )
+			__( 'Use these to place a signup form on specific pages or posts.', 'benchmark-email-lite' )
 		);
 
 		// Loop Forms
 		foreach( $forms as $form ) {
 			echo sprintf(
 				'
-					<p>
-						<strong>%s</strong><br />
+					<p style="margin: 2em 0;">
+						<h2>%s</h2>
 						<code>[benchmark-email-lite form_id="%d"]</code>
 					</p>
 				',
@@ -184,7 +184,7 @@ class wpbme_admin {
 
 		// Manage Forms Button
 		echo sprintf(
-			'<p><a href="%s" class="button-primary">%s</a></p>',
+			'<p style="margin: 2em 0;"><a href="%s" class="button-primary">%s</a></p>',
 			admin_url( 'admin.php?page=wpbme_interface&tab=Listbuilder' ),
 			__( 'Manage Signup Forms', 'benchmark-email-lite' )
 		);
