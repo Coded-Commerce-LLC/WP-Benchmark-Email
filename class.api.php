@@ -162,6 +162,8 @@ class wpbme_api {
 	// Creates Email Campaign
 	static function create_email( $name, $subject, $from_name, $from_email, $post_id='' ) {
 		$uri = 'Emails/';
+
+		// Get Lists
 		$lists = self::get_lists();
 		if( ! is_array( $lists ) ) { return; }
 		$to_lists = [];
@@ -175,33 +177,59 @@ class wpbme_api {
 			if( in_array( $list->Name, $protected_lists ) ) { continue; }
 			$to_lists[] = [ 'ID' => $list->ID ];
 		}
+
+		// Create Email
 		$body = [
 			'Detail' => [
-				'Version' => 420,
-				'EmailType' => 'DD',
-				'LayoutID' => 10,
-				//'HasPermissionReminderMessage' => 1,
-				'HasWebpageVersion' => 1,
-				'Name' => $name,
-				'Subject' => $subject,
-				'FromName' => $from_name,
-				'FromEmail' => $from_email,
-				'ReplyEmail' => $from_email,
 				'ContactLists' => $to_lists,
-				'IsRSS'	=> 1,
-				'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
-					? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
-					: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
-				//'RSSSchedule'	=> '',
-				//'RSSinterval'	=> '',
-				//'IsRSSActive' => 1,
-				//'TemplateContent' => $content,
-				//'TemplateText' => $content,
-				//'IsManualText' => 1,
-				//'TemplateCode' => $content,
+				'EmailType' => 'DD',
+				'FromEmail' => $from_email,
+				'FromName' => $from_name,
+				'HasWebpageVersion' => 1,
+				'LayoutID' => 10,
+				'Name' => $name,
+				'ReplyEmail' => $from_email,
+				'Subject' => $subject,
+				'Version' => 420,
+				//'HasPermissionReminderMessage' => 1,
+				//'IsRSS'	=> 1,
+				//'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
+				//	? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
+				//	: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
 			]
 		];
-		return self::benchmark_query( $uri, 'POST', $body );
+		$response = wpbme_api::benchmark_query( 'Emails/', 'POST', $body );
+		$emailID = empty( $response->ID ) ? '' : intval( $response->ID );
+		if( ! $emailID ) { return $response; }
+
+		// Obtain Template
+		$body = [ 'EmailID' => $emailID ];
+		$response = wpbme_api::benchmark_query( 'Emails/Template/317', 'PATCH', $body );
+		$html = empty( $response->TemplateContent ) ? '' : $response->TemplateContent;
+		if( ! $html ) { return $response; }
+
+		// Tweak Template
+		$post = get_post( $post_id );
+		$tweak = sprintf(
+			'
+				<div style="%s">%s</div>
+				<div style="%s">%s</div>
+				<span style="%s"><a href="%s" target="_new" style="%s">Read More</a></span>
+			',
+			'font-weight: normal; font-size: 14px;line-height: 150%;font-weight: bold;',
+			$post->post_title,
+			'font-size: 12px; line-height: 150%;',
+			$post->post_content,
+			'font-size: 12px; color:#31ade0; line-height: 150%;',
+			get_permalink( $post_id ),
+			'color:inherit;'
+		);
+		$html = str_replace( '#RSSCONTENT#', $tweak, $html );
+
+		// Send Template To Email
+		$body = [ 'Detail' => [ 'TemplateContent' => $html ] ];
+		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $body );
+		return $emailID;
 	}
 
 	// Talk To Benchmark ReST API

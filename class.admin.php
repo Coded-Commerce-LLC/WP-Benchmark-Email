@@ -106,8 +106,8 @@ class wpbme_admin {
 				$current_user->user_email,
 				$post->ID
 			);
-			if( ! empty( $newemail->ID ) ) {
-				$tab = '/Emails/Edit?e=' . $newemail->ID;
+			if( intval( $newemail ) > 1 ) {
+				$tab = '/Emails/Edit?e=' . $newemail;
 			} else {
 				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
 					$tab = '/ConfirmedEmails';
