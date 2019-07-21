@@ -52,24 +52,108 @@ class wpbme_api {
 
 		// Set Form Details
 		$set_fields = [];
+		$field_translate = [
+			'firstname' => 'First Name',
+			'middlename' => 'Middle Name',
+			'lastname' => 'Last Name',
+			'field1' => 'Address',
+			'field2' => 'City',
+			'field3' => 'State',
+			'field4' => 'Zip',
+			'field5' => 'Country',
+			'field6' => 'Phone',
+			'field7' => 'Fax',
+			'field8' => 'Cell Phone',
+			'field9' => 'Company Name',
+			'field10' => 'Job Title',
+			'field11' => 'Business Phone',
+			'field12' => 'Business Fax',
+			'field13' => 'Business Address',
+			'field14' => 'Business City',
+			'field15' => 'Business State',
+			'field16' => 'Business Zip',
+			'field17' => 'Business Country',
+			'field18' => 'Notes',
+			'field19' => 'Date 1',
+			'field20' => 'Date 2',
+			'field21' => 'Extra 3',
+			'field22' => 'Extra 4',
+			'field23' => 'Extra 5',
+			'field24' => 'Extra 6',
+		];
 		foreach( $fields as $i => $field ) {
+			$column = array_search( $field['name'], $field_translate );
+			if( $column === false ) { continue; }
 			$set_fields[] = [
-				'Column' => $i,
-				'Name' => $field['name'],
-				'Label' => $field['label'],
-				'IsEmail' => ( $field['name'] == 'Email' ) ? 1 : 0,
-				'IsRequired' => $field['required'] ? 1 : 0,
-				'Type' => 1, //( $field['name'] == 'Email' ) ? 'Email' : 'Text',
-				//'Order' => $i,
+				'type' => '1',
+				'column' => $column,
+				'name' => $field['name'],
+				'required' => $field['required'] ? 1 : 0,
+				'placeholder' => $field['name'],
+				'label' => $field['label'],
 			];
 		}
+		$DesignCode = [
+			'boxSetting' => [ 'width' => '', 'hasMarketing' => false ],
+			'appearance' => [ 'color' => '#ffffff', 'borderColor' => '', 'borderWidth' => '0', 'borderRadius' => '0' ],
+			'fields' => [
+				0 => [ 'fieldtype' => 'text', 'content' => $introduction ],
+				1 => [ 'fieldtype' => 'fields', 'fields' => $set_fields ],
+				2 => [
+					'fieldtype' => 'button',
+					'align' => 'left',
+					'width' => 3,
+					'height' => 3,
+					'bgColor' => 'rgb(33, 41, 45)',
+					'borderColor' => 'rgba(0, 0, 0, 0)',
+					'borderWidth' => 0,
+					'borderRadius' => 2,
+					'font' => 'Helvetica, Arial, sans-serif',
+					'fontSize' => 14,
+					'bold' => 'normal',
+					'italic' => 'normal',
+					'color' => 'rgb(255, 255, 255)',
+					'underline' => '',
+					'lineheight' => 1,
+					'letterspacing' => '1px',
+					'content' => $button,
+				],
+			],
+			'fieldappearance' => [
+				'color' => '#ffffff',
+				'borderColor' => '#f1f2f2',
+				'borderWidth' => '2',
+				'labelBold' => 'normal',
+				'labelItalic' => 'normal',
+				'labelColor' => '#000000',
+				'labelAlign' => 'left',
+				'fieldBorderRadius' => 0,
+				'labelFont' => 'Helvetica, Arial, sans-serif',
+				'labelSize' => 14,
+				'placeholderFont' => 'Helvetica, Arial, sans-serif',
+				'placeholderSize' => 14,
+				'placeholderBold' => 'normal',
+				'placeholderItalic' => 'normal',
+				'placeholderColor' => '#c4c4c4',
+				'inputFont' => 'Helvetica, Arial, sans-serif',
+				'inputSize' => 14,
+				'inputBold' => 'normal',
+				'inputItalic' => 'normal',
+				'inputColor' => '#000000',
+				'answerFont' => 'Helvetica, Arial, sans-serif',
+				'answerSize' => 14,
+				'answerBold' => 'normal',
+				'answerItalic' => 'italic',
+				'answerColor' => '#000000',
+				'borderRadius' => 0,
+				'buttonLightColor' => '#353d41',
+				'buttonDarkColor' => '#0d1519',
+			],
+			'security' => [ 'hasCaptcha' => 0 ],
+		];
 		$body = [
 			'ID' => $form_id,
-			'Detail' => [
-				'Button' => $button,
-				'Fields' => $set_fields,
-				'Introduction' => $introduction,
-			]
+			'Detail' => [ 'DesignCode' => json_encode( $DesignCode ) ]
 		];
 		$response = self::benchmark_query( 'SignupForm/' . $form_id, 'PATCH', $body );
 		return $form_id;
