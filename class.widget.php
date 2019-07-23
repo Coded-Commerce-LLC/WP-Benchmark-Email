@@ -67,9 +67,19 @@ class wpbme_widget extends WP_Widget {
 
 		// Manage Forms Button
 		echo sprintf(
-			'<p><a href="%s" class="button">%s</a></p>',
+			'
+				<p>
+					<a href="%s">%s</a><br /><br />
+					<a href="%s">%s</a><br /><br />
+					<a href="%s" class="button">%s</a><br /><br />
+				</p>
+			',
+			admin_url( 'admin.php?page=wpbme_interface&tab=Signupform/FullEmbed/Details' ),
+			__( 'Create an Embedded Form', 'benchmark-email-lite' ),
+			admin_url( 'admin.php?page=wpbme_interface&tab=Signupform/Popup/Details' ),
+			__( 'Create a Popup Form', 'benchmark-email-lite' ),
 			admin_url( 'admin.php?page=wpbme_interface&tab=Listbuilder' ),
-			__( 'Manage Signup Forms', 'benchmark-email-lite' )
+			__( 'Manage All Signup Forms', 'benchmark-email-lite' )
 		);
 	}
 

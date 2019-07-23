@@ -92,6 +92,7 @@ class wpbme_admin {
 	// Page Body For Benchmark UI
 	static function page_interface() {
 		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
+		$do_redirect = false;
 
 		// Handle P2C
 		if( ! empty( $_GET['post'] ) && intval( $_GET['post'] ) ) {
@@ -108,6 +109,7 @@ class wpbme_admin {
 			);
 			if( intval( $newemail ) > 1 ) {
 				$tab = '/Emails/Edit?e=' . $newemail;
+				$do_redirect = true;
 			} else {
 				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
 					$tab = '/ConfirmedEmails';
@@ -143,6 +145,20 @@ class wpbme_admin {
 			'width: 100%; height: 1000px;',
 			__( 'Loading...', 'benchmark-email-lite' )
 		);
+
+		// Handle Email Campaign Redirection
+		if( $do_redirect ) {
+			echo sprintf(
+				'
+					<script type="text/javascript">
+					jQuery( document ).ready( function( $ ) {
+						$( "iframe#wpbme_interface" ).attr( "src", "%s" ); 
+					} );
+					</script>
+				',
+				wpbme_api::$url_ui . 'Emails/Edit?e=' . $newemail
+			);
+		}
 	}
 
 	// Displays Shortcodes
@@ -170,12 +186,14 @@ class wpbme_admin {
 
 		// Loop Forms
 		foreach( $forms as $form ) {
+			if( empty( $form->Name ) || empty( $form->ID ) ) { continue; }
 			echo sprintf(
 				'
 					<p style="margin: 2em 0;">
 						<h2>%s</h2>
 						<code>[benchmark-email-lite form_id="%d"]</code>
 					</p>
+					<hr />
 				',
 				$form->Name,
 				$form->ID
@@ -184,9 +202,19 @@ class wpbme_admin {
 
 		// Manage Forms Button
 		echo sprintf(
-			'<p style="margin: 2em 0;"><a href="%s" class="button-primary">%s</a></p>',
+			'
+				<p style="margin: 2em 0;">
+					<a href="%s">%s</a><br /><br />
+					<a href="%s">%s</a><br /><br />
+					<a href="%s" class="button-primary">%s</a>
+				</p>
+			',
+			admin_url( 'admin.php?page=wpbme_interface&tab=Signupform/FullEmbed/Details' ),
+			__( 'Create an Embedded Form', 'benchmark-email-lite' ),
+			admin_url( 'admin.php?page=wpbme_interface&tab=Signupform/Popup/Details' ),
+			__( 'Create a Popup Form', 'benchmark-email-lite' ),
 			admin_url( 'admin.php?page=wpbme_interface&tab=Listbuilder' ),
-			__( 'Manage Signup Forms', 'benchmark-email-lite' )
+			__( 'Manage All Signup Forms', 'benchmark-email-lite' )
 		);
 	}
 }
