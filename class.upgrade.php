@@ -74,17 +74,19 @@ add_action( 'init', function() {
 			];
 			update_option( 'widget_wpbme_widget', $new_widgets );
 
-			// Remove The Old Widget Version
-			unset( $old_widgets[$widget_id] );
-			update_option( 'widget_benchmarkemaillite_widget', $old_widgets );
+			// Old Widget Removal -- Disabling For Now!
+			//unset( $old_widgets[$widget_id] );
+			//update_option( 'widget_benchmarkemaillite_widget', $old_widgets );
 
-			// Update Active Widgets
+			// Update The Active Widgets
 			$active_widgets = get_option( 'sidebars_widgets' );
 			foreach( $active_widgets as $sidebar => $widgets ) {
 				if( ! is_array( $widgets ) ) { continue; }
 				foreach( $widgets as $i => $widget ) {
 					if( $widget == sprintf( 'benchmarkemaillite_widget-%d', $widget_id ) ) {
-						$active_widgets[$sidebar][$i] = sprintf( 'wpbme_widget-%d', $widget_id );
+
+						// Using `$active_widgets[$sidebar][$i]` Would Replace Instead Of Add New!
+						$active_widgets[$sidebar][] = sprintf( 'wpbme_widget-%d', $widget_id );
 					}
 				}
 			}

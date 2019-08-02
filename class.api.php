@@ -11,7 +11,25 @@ class wpbme_api {
 		$url_api = 'https://clientapi.benchmarkemail.com/',
 		$url_ui = 'https://ui.benchmarkemail.com/',
 		$url_apro = 'https://aproapi.benchmarkemail.com/',
-		$url_xml = 'https://api.benchmarkemail.com/';
+		$url_xml = 'https://api.benchmarkemail.com/',
+		$url_tracker = 'https://ssl.google-analytics.com/';
+
+	// Developer Analytics
+	static function tracker( $action, $value='' ) {
+		$body = [
+			'v' => 1,
+			'tid' => 'UA-120661799-1',
+			'cid' => get_current_user_id(),
+			't' => 'event',
+			'ec' => 'BMEL3',
+			'ea' => $action,
+			'el' => ucwords( $action ),
+			'ev' => $value,
+		];
+		$args = [ 'body' => $body ];
+		$url = self::$url_tracker . 'collect';
+		$response = wp_remote_post( $url, $args );
+	}
 
 	// Get All Signup Forms
 	static function get_forms() {

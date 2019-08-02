@@ -8,6 +8,7 @@ class wpbme_settings {
 
 	// Renders WP Settings API Forms
 	static function page_settings() {
+		wpbme_api::tracker( 'settings' );
 
 		// Security
 		if( ! current_user_can( 'manage_options' ) ) {
