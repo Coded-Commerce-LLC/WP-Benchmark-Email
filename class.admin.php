@@ -141,7 +141,7 @@ class wpbme_admin {
 			',
 			__( 'Benchmark Email Interface', 'benchmark-email-lite' ),
 			$redirect_url,
-			__( 'Click to use a new tab - if the below fails to load properly in your browser.', 'benchmark-email-lite' ),
+			__( 'Click to use a new tab - if the below fails to authenticate properly.', 'benchmark-email-lite' ),
 			$redirect_url,
 			'width: 100%; height: 1000px;',
 			__( 'Loading...', 'benchmark-email-lite' )

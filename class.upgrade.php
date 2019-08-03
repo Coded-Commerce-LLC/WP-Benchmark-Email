@@ -25,6 +25,12 @@ add_action( 'init', function() {
 		}
 	}
 
+	// Developer Affiliation
+	wpbme_api::update_partner();
+
+	// Get Temp Auth Tokens
+	wpbme_api::authenticate_ui_renew();
+
 	// Transfer All Widgets From v2.x
 	$old_widgets = get_option( 'widget_benchmarkemaillite_widget' );
 	$new_widgets = get_option( 'widget_wpbme_widget' );
@@ -61,7 +67,12 @@ add_action( 'init', function() {
 						];
 					}
 				}
-				$form_name = sprintf( '%s - %s', __( 'Migrated List', 'benchmark-email-lite' ), $list_name );
+				$form_name = sprintf(
+					'%s (%s %s)',
+					$list_name,
+					__( 'Migrated', 'benchmark-email-lite' ),
+					current_time( 'mysql' )
+				);
 				$form_id = wpbme_api::create_form(
 					$list_id, $list_name, $form_name, $description, $button, $fields
 				);

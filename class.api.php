@@ -377,6 +377,8 @@ class wpbme_api {
 		$wpbme_temp_token = trim( $response->Response->Token );
 		update_option( 'wpbme_temp_token', $wpbme_temp_token );
 		update_option( 'wpbme_temp_token_ttl', current_time( 'timestamp' ) + 86400 );
+		$wpbme_ap_token = self::get_ap_token( $wpbme_temp_token );
+		update_option( 'wpbme_ap_token', $wpbme_ap_token );
 		return $wpbme_temp_token;
 	}
 
@@ -398,6 +400,7 @@ class wpbme_api {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $body );
 		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
 		$response = curl_exec( $ch );
+		self::logger( $url, [ 'headers' => $headers, 'body' => $body ], $response );
 		if( ! $response ) { return; }
 		$wpbme_ap_token = str_replace( '"', '', trim( $response ) );
 		return $wpbme_ap_token;
