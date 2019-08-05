@@ -16,6 +16,8 @@ class wpbme_api {
 
 	// Developer Analytics
 	static function tracker( $action ) {
+		$wpbme_usage_disable = get_option( 'wpbme_usage_disable' );
+		if( $wpbme_usage_disable == '1' ) { return; }
 		$body = [
 			'v' => 1,
 			'tid' => 'UA-120661799-1',

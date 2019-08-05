@@ -45,6 +45,15 @@ class wpbme_settings {
 			$updated = true;
 		}
 
+		// Usage Disablement Update
+		if( isset( $_POST[ 'wpbme_usage_disable' ] ) && $_POST[ 'wpbme_usage_disable' ] == 'yes' ) {
+			update_option( 'wpbme_usage_disable', 'yes' );
+			$updated = true;
+		} elseif( isset( $_POST[ 'wpbme_key' ] ) ) {
+			delete_option( 'wpbme_usage_disable' );
+			$updated = true;
+		}
+
 		// Debug Update
 		if( isset( $_POST[ 'wpbme_debug' ] ) && $_POST[ 'wpbme_debug' ] == 'yes' ) {
 			update_option( 'wpbme_debug', 'yes' );
@@ -70,6 +79,7 @@ class wpbme_settings {
 		$wpbme_key = get_option( 'wpbme_key' );
 		$wpbme_temp_token = get_option( 'wpbme_temp_token' );
 		$wpbme_tracking_disable = get_option( 'wpbme_tracking_disable' );
+		$wpbme_usage_disable = get_option( 'wpbme_usage_disable' );
 
 		// Show Form
 		?>
@@ -129,6 +139,13 @@ class wpbme_settings {
 						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_tracking_disable" name="wpbme_tracking_disable" value="yes" <?php echo $wpbme_tracking_disable; ?> />
 						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?>
+					</label>
+				</p>
+				<p>
+					<label>
+						<?php $wpbme_usage_disable = $wpbme_usage_disable == 'yes' ? 'checked="checked"' : ''; ?>
+						<input type="checkbox" id="wpbme_usage_disable" name="wpbme_usage_disable" value="yes" <?php echo $wpbme_usage_disable; ?> />
+						<?php _e( 'Disable admin usage tracking?', 'benchmark-email-lite' ); ?>
 					</label>
 				</p>
 				<?php if( class_exists( 'WooCommerce' ) ) { ?>
