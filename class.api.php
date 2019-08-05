@@ -74,6 +74,7 @@ class wpbme_api {
 			'firstname' => 'First Name',
 			'middlename' => 'Middle Name',
 			'lastname' => 'Last Name',
+			'email' => 'Email',
 			'field1' => 'Address',
 			'field2' => 'City',
 			'field3' => 'State',

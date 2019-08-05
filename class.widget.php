@@ -22,13 +22,39 @@ class wpbme_widget extends WP_Widget {
 
 	// Widget Display
 	public function widget( $args, $instance ) {
-		$form_id = $instance['post_id'];
-		echo wpbme_frontend::get_signup_form( $form_id );
+		echo $args['before_widget'];
+		if ( ! empty( $instance['title'] ) ) {
+			echo sprintf(
+				'%s%s%s',
+				$args['before_title'],
+				apply_filters( 'widget_title', $instance['title'] ),
+				$args['after_title']
+			);
+		}
+		if( ! empty( $instance['post_id'] ) ) {
+			echo wpbme_frontend::get_signup_form( $instance['post_id'] );
+		}
+		echo $args['after_widget'];
 	}
 
 	// Widget Settings
 	public function form( $instance ) {
 		wpbme_api::tracker( 'Widget-Admin' );
+
+		// Title Field
+		echo sprintf(
+			'
+				<p>
+					<label for="%s">%s</label> 
+					<input class="widefat" id="%s" name="%s" type="text" value="%s">
+				</p>
+			',
+			esc_attr( $this->get_field_id( 'title' ) ),
+			__( 'Title', 'benchmark-email-lite' ),
+			esc_attr( $this->get_field_id( 'title' ) ),
+			esc_attr( $this->get_field_name( 'title' ) ),
+			empty( $instance['title'] ) ? '' : esc_attr( $instance['title'] )
+		);
 
 		// Query Existing Forms
 		$forms = wpbme_api::get_forms();
@@ -86,6 +112,10 @@ class wpbme_widget extends WP_Widget {
 
 	// Widget Save
 	public function update( $new_instance, $old_instance ) {
+		$new_instance['title'] = empty( $new_instance['title'] )
+			? '' : sanitize_text_field( $new_instance['title'] );
+		$new_instance['post_id'] = empty( $new_instance['post_id'] )
+			? '' : sanitize_text_field( $new_instance['post_id'] );
 		return $new_instance;
 	}
 }
