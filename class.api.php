@@ -15,16 +15,14 @@ class wpbme_api {
 		$url_tracker = 'https://ssl.google-analytics.com/';
 
 	// Developer Analytics
-	static function tracker( $action, $value='' ) {
+	static function tracker( $action ) {
 		$body = [
 			'v' => 1,
 			'tid' => 'UA-120661799-1',
 			'cid' => get_current_user_id(),
 			't' => 'event',
 			'ec' => 'BMEL3',
-			'ea' => $action,
-			'el' => ucwords( $action ),
-			'ev' => $value,
+			'ea' => urlencode( $action ),
 		];
 		$args = [ 'body' => $body ];
 		$url = self::$url_tracker . 'collect';

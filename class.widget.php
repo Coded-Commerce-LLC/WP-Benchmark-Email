@@ -28,7 +28,7 @@ class wpbme_widget extends WP_Widget {
 
 	// Widget Settings
 	public function form( $instance ) {
-		wpbme_api::tracker( 'widgetadmin' );
+		wpbme_api::tracker( 'Widget-Admin' );
 
 		// Query Existing Forms
 		$forms = wpbme_api::get_forms();

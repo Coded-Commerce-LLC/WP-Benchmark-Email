@@ -92,7 +92,6 @@ class wpbme_admin {
 	// Page Body For Benchmark UI
 	static function page_interface() {
 		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
-		wpbme_api::tracker( 'interface', $tab );
 		$do_redirect = false;
 
 		// Handle P2C
@@ -122,6 +121,9 @@ class wpbme_admin {
 				}
 			}
 		}
+
+		// Developer Analytics
+		wpbme_api::tracker( sanitize_title( ltrim( $tab, '/' ) ) );
 
 		// Get Authenticated Redirect
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
@@ -164,7 +166,7 @@ class wpbme_admin {
 
 	// Displays Shortcodes
 	static function page_shortcodes() {
-		wpbme_api::tracker( 'shortcodes' );
+		wpbme_api::tracker( 'Shortcodes' );
 		$forms = wpbme_api::get_forms();
 
 		// Handle No Forms
