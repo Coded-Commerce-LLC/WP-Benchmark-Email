@@ -1,5 +1,12 @@
 <?php
 
+// Display Upgrade Notice
+add_action( 'in_plugin_update_message-benchmark-email-lite/benchmark-email-lite.php', function( $data, $response ) {
+	if( isset( $data['upgrade_notice'] ) ) {
+		sprintf( '<div class="update-message">%s</div>', wpautop( $data['upgrade_notice'] ) );
+	}
+}, 10, 2 );
+
 // WP Initialization Front And Back Ends
 add_action( 'init', function() {
 
