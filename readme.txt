@@ -2,27 +2,44 @@
 Contributors: seanconklin, randywsandberg
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
 Requires at least: 3.1
-Tested up to: 5.2.2
+Tested up to: 5.3.2
 Stable tag: 3.0
 License: GPLv3
 
-Benchmark Email Lite lets you build an email list from your WordPress or WooCommerce site, and easily send your subscribers email versions of your posts and pages.
+Your Wordpress Site and Email Marketing all in one place!
 
 == Description ==
 
-[youtube https://www.youtube.com/watch?v=p52XQdzNY84]
+[youtube https://www.youtube.com/watch?v=O-bawo9m-MM&feature=youtu.be]
 
-If you want your blog to reach every reader, you have to use email. The Benchmark Email Lite WordPress Plugin builds an email list right from the pages of your WordPress site, and sends your subscribers email versions of your posts and pages in a flash. See when, where, and who opens or clicks on links or unsubscribes—all live from your WordPress dashboard!
+=== What is Benchmark Email Lite? ===
 
-With this version you can:
+Benchmark Email Lite is a WordPress plugin that saves you time by giving you access to your email marketing account directly in your WordPress dashboard.
 
-* Build your list of subscribers with a signup form sidebar widget or shortcode for pages or posts.
-* Easily send or schedule a formatted email version of your blog posts.
-* Interface into your Benchmark Email account to perform other tasks and view reports right from the WP Admin area, powered by single-sign-on technology.
+* Easily convert blog posts into email campaigns to increase the reach of your content
+* Turn site visitors into subscribers by creating signup forms and pop-up modals that will automatically adapt to your WordPress theme
+* Streamline your workflows by creating and scheduling any email campaign directly from your WordPress dashboard
 
-To get started, sign up for a [FREE Benchmark Email account](https://www.benchmarkemail.com?p=68907 "Try Benchmark Email FREE"). This account will allow you to have up to 2,000 contacts and send up to 14,000 emails per month. You can use the Plugin and fully experience what Benchmark Email has to offer, including our Mobile Marketing iPhone App, Surveys, Polls and Autoresponders. We know you'll love what you see, so once you out-grow your free account you can still use the Plugin free of charge for as long as you’d like.
+=== Send More Targeted Email Campaigns with Website Tracking ===
 
-Need help? Please call Benchmark Email at 800.430.4095.
+When you install Benchmark Email Lite on your WordPress site, it will automatically install the Automation Pro website tracker.
+
+* Follow-up with email campaigns based on the products, services or content that subscribers viewed on your website
+* Boost your sales by automating emails that further convince a subscriber of the value of a product or service they showed interest in by visiting a page on your site
+* A site visitor viewing a specific page can trigger an email with additional information on a product or service
+
+=== Access Your Whole Email Marketing Account from Your WordPress Dashboard ===
+
+Say goodbye to at least one extra tab on your browser.
+
+* Discover the blog content that is most popular with your subscribers by viewing your open and click reports directly in your WordPress dashboard—then create more content just like it!
+* Create content and promote it all from the same place
+
+=== Easily Grow Your Most Valuable Marketing Asset: Your Email List ===
+
+No coding necessary!
+
+With the Benchmark Email Lite plugin, you can quickly and easily place a signup form anywhere you want on your site. It’s also super simple to customize your forms.
 
 == Installation ==
 
@@ -59,7 +76,12 @@ Please call Benchmark Email at (800) 430-4095.
 
 == Screenshots ==
 
-1. This is the version 3.x admin menu and interface
+1. This is the plugin settings panel.
+2. This is the version 3.x Benchmark admin interface.
+3. This is the sidebar widget admin panel.
+4. This is the shortcodes admin panel.
+5. This is a sample signup form on a page sidebar with TwentyNinteen theme.
+6. This is a sample pop-up signup form being used on a home page. 
 
 == Changelog ==
 
@@ -71,6 +93,7 @@ Added: Post to email campaigns template that enables the drag/drop editor for im
 Updated: Migrates legacy v2.x plugin signup forms to Benchmark signup form entities to maximize the design and configuration options and enables the pop-up style signup forms.
 Updated: Easier initial plugin configuration steps with connect/reconnect wizard.
 Updated: A cleaner admin interface.
+Updated: Switched from the XML-RPC API over to the newer and faster REST API.
 
 = 2.11 on 2019-01-06 =
 

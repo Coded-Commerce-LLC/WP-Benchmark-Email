@@ -182,7 +182,7 @@ class wpbme_api {
 	static function create_email( $name, $subject, $from_name, $from_email, $post_id='' ) {
 		$uri = 'Emails/';
 
-		// Get Lists
+		// Set Lists
 		$lists = self::get_lists();
 		if( ! is_array( $lists ) ) { return; }
 		$to_lists = [];
@@ -194,7 +194,9 @@ class wpbme_api {
 		foreach( $lists as $list ) {
 			if( empty( $list->ID ) ) { continue; }
 			if( in_array( $list->Name, $protected_lists ) ) { continue; }
-			$to_lists[] = [ 'ID' => $list->ID ];
+			if( $list->Name == 'Sample Contact List' ) {
+				$to_lists[] = [ 'ID' => $list->ID ];
+			}
 		}
 
 		// Create Email
