@@ -123,7 +123,9 @@ class wpbme_admin {
 		}
 
 		// Developer Analytics
-		wpbme_api::tracker( 'UI-' . ucwords( sanitize_title( ltrim( $tab, '/' ) ) ) );
+		$tracker = ucwords( sanitize_title( ltrim( preg_replace( '/\?.*/', '', $tab ), '/' ) ) );
+		echo $tracker;
+		wpbme_api::tracker( 'UI-' . $tracker );
 
 		// Get Authenticated Redirect
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
