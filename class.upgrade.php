@@ -1,5 +1,8 @@
 <?php
 
+// Exit If Accessed Directly
+if( ! defined( 'ABSPATH' ) ) { exit; }
+
 // Display Upgrade Notice
 add_action( 'in_plugin_update_message-benchmark-email-lite/benchmark-email-lite.php', function( $data, $response ) {
 	if( isset( $data['upgrade_notice'] ) ) {

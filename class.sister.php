@@ -1,5 +1,8 @@
 <?php
 
+// Exit If Accessed Directly
+if( ! defined( 'ABSPATH' ) ) { exit; }
+
 // Admin Dashboard Items
 add_action( 'admin_notices', function() {
 
