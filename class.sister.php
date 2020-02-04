@@ -1,7 +1,7 @@
 <?php
 
 // Admin Dashboard Items
-add_action( 'wp_dashboard_setup', function() {
+add_action( 'admin_notices', function() {
 
 	// Ensure is_plugin_active() Exists
 	if( ! function_exists( 'is_plugin_active' ) ) {
