@@ -3,7 +3,7 @@ Contributors: seanconklin, randywsandberg
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
 Requires at least: 3.1
 Tested up to: 5.3.2
-Stable tag: 3.0
+Stable tag: 3.1
 License: GPLv3
 
 Your Wordpress Site and Email Marketing all in one place!
@@ -85,15 +85,22 @@ Please call Benchmark Email at (800) 430-4095.
 
 == Changelog ==
 
+= 3.1 on 2020-02-06 =
+
+* Fixed: WP hook improvement to prevent a PHP warning during upgrading.
+* Fixed: added silence-is-golden security to two files that were missing it.
+* Updated: cleaned-up developer analytics tracking post-to-campaign email send.
+* Updated: developer analytics tracker widget moved from widget-load to widget-save.
+
 = 3.0 on 2019-08-05 =
 
-Added: Optional user submission tracker for Automation Pro workflows.
-Added: Optional admin usage tracker to help drive our development roadmap.
-Added: Post to email campaigns template that enables the drag/drop editor for improved design.
-Updated: Migrates legacy v2.x plugin signup forms to Benchmark signup form entities to maximize the design and configuration options and enables the pop-up style signup forms.
-Updated: Easier initial plugin configuration steps with connect/reconnect wizard.
-Updated: A cleaner admin interface.
-Updated: Switched from the XML-RPC API over to the newer and faster REST API.
+* Added: Optional user submission tracker for Automation Pro workflows.
+* Added: Optional admin usage tracker to help drive our development roadmap.
+* Added: Post to email campaigns template that enables the drag/drop editor for improved design.
+* Updated: Migrates legacy v2.x plugin signup forms to Benchmark signup form entities to maximize the design and configuration options and enables the pop-up style signup forms.
+* Updated: Easier initial plugin configuration steps with connect/reconnect wizard.
+* Updated: A cleaner admin interface.
+* Updated: Switched from the XML-RPC API over to the newer and faster REST API.
 
 = 2.11 on 2019-01-06 =
 
@@ -347,6 +354,10 @@ Updated: Switched from the XML-RPC API over to the newer and faster REST API.
 * Added: Initial Plugin release.
 
 == Upgrade Notice ==
+
+= 3.1 =
+
+* Bug fix release.
 
 = 3.0 =
 
