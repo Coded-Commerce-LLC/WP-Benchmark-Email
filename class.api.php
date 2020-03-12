@@ -27,7 +27,7 @@ class wpbme_api {
 			'ea' => urlencode( $action ),
 		];
 		$args = [ 'body' => $body ];
-		$url = self::$url_tracker . 'collect';
+		$url = self::$url_tracker . 'collect?z=' . rand( 123456, 654321 );
 		$response = wp_remote_post( $url, $args );
 	}
 

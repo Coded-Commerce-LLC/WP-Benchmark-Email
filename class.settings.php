@@ -105,7 +105,7 @@ class wpbme_settings {
 							? __( 'You are connected!', 'benchmark-email-lite' ) . $link_to_ui
 							: __( 'You are not connected.', 'benchmark-email-lite' )
 							. sprintf(
-								'<a href="%s">%s</a>',
+								' <a href="%s">%s</a>',
 								'https://www.benchmarkemail.com?p=68907',
 								__( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' )
 							),
