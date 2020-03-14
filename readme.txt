@@ -3,7 +3,7 @@ Contributors: seanconklin, randywsandberg
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
 Requires at least: 3.1
 Tested up to: 5.4
-Stable tag: 3.2
+Stable tag: 3.3
 License: GPLv3
 
 Your Wordpress Site and Email Marketing all in one place!
@@ -84,6 +84,10 @@ Please call Benchmark Email at (800) 430-4095.
 6. This is a sample pop-up signup form being used on a home page. 
 
 == Changelog ==
+
+= 3.3 on 2020-XX-YY =
+
+* Fixed: plugin action link for Settings page.
 
 = 3.2 on 2020-03-12 =
 
@@ -359,6 +363,10 @@ Please call Benchmark Email at (800) 430-4095.
 * Added: Initial Plugin release.
 
 == Upgrade Notice ==
+
+= 3.3 =
+
+* Bug fix release.
 
 = 3.2 =
 

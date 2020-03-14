@@ -22,7 +22,7 @@ add_action( 'wp_ajax_wpbme_action', function() {
 } );
 
 // Plugins Page Link To Settings
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $links ) {
+add_filter( 'plugin_action_links_benchmark-email-lite/benchmark-email-lite.php', function( $links ) {
 	$settings = [
 		'settings' => sprintf(
 			'<a href="%s">%s</a>',
