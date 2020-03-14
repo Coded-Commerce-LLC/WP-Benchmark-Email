@@ -107,16 +107,43 @@ class wpbme_admin {
 				$current_user->user_email,
 				$post->ID
 			);
+
+			// Successful Email Creation
 			if( intval( $newemail ) > 1 ) {
 				$tab = '/Emails/Edit?e=' . $newemail;
 				$do_redirect = true;
+
+			// Failed Email Creation
 			} else {
+
+				// Failed Due To From Address
 				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
 					$tab = '/ConfirmedEmails';
 					echo sprintf(
-						'<div class="notice notice-error"><p>%s<br /><strong>%s</strong></p></div>',
-						__( 'Please verify the email address you are signed into WordPress with using the interface below, then re-attempt creating your email.', 'benchmark-email-lite' ),
+						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
+						__(
+							'Please verify the email address you are signed into WordPress with using the interface below,'
+							. ' then re-attempt creating your email.',
+							'benchmark-email-lite'
+						),
 						$current_user->user_email
+					);
+
+				// Failed Due To Missing List
+				} else if( stristr( $newemail, 'No Contact Lists' ) !== false ) {
+					$tab = '/Contacts';
+					echo sprintf(
+						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
+						__( 'Missing contact list', 'benchmark-email-lite' ),
+						__( 'Sample Contact List', 'benchmark-email-lite' )
+					);
+
+				// Other Error
+				} else {
+					$tab = '/Emails/Dashboard';
+					echo sprintf(
+						'<div class="notice notice-error"><p>%s</p></div>',
+						__( 'Error creating email campaign. Please contact support.', 'benchmark-email-lite' )
 					);
 				}
 			}

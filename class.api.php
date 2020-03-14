@@ -186,18 +186,19 @@ class wpbme_api {
 		$lists = self::get_lists();
 		if( ! is_array( $lists ) ) { return; }
 		$to_lists = [];
-		$protected_lists = [
-			'Master Unsubscribe List',
-			'WooCommerce Abandoned Carts',
-			'WooCommerce Customers'
-		];
 		foreach( $lists as $list ) {
 			if( empty( $list->ID ) ) { continue; }
-			if( in_array( $list->Name, $protected_lists ) ) { continue; }
-			if( $list->Name == 'Sample Contact List' ) {
+			$default_lists = [
+				strtolower( 'Sample Contact List' ),
+				strtolower( 'Muestra de Lista de Contacto' ),
+				strtolower( 'Amostra de Lista de Contatos' ),
+				strtolower( 'サンプルリスト' ),
+			];
+			if( in_array( strtolower( $list->Name ), $default_lists ) ) {
 				$to_lists[] = [ 'ID' => $list->ID ];
 			}
 		}
+		if( ! $to_lists ) { return 'No Contact Lists'; }
 
 		// Create Email
 		$body = [
