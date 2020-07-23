@@ -110,7 +110,7 @@ class wpbme_admin {
 
 			// Successful Email Creation
 			if( intval( $newemail ) > 1 ) {
-				$tab = '/Emails/Edit?e=' . $newemail;
+				$tab = '/Emails/Details?e=' . $newemail;
 				$do_redirect = true;
 
 			// Failed Email Creation

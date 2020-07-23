@@ -1,12 +1,15 @@
 === Benchmark Email Lite ===
 Contributors: seanconklin, randywsandberg
+Donate link: https://codedcommerce.com/donate
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
-Requires at least: 3.1
-Tested up to: 5.4
-Stable tag: 3.3
-License: GPLv3
+Requires at least: 4.9.15
+Requires PHP: 7.2
+Tested up to: 5.4.2
+Stable tag: 3.2
+License: GPLv2 (or later)
 
 Your Wordpress Site and Email Marketing all in one place!
+
 
 == Description ==
 
@@ -41,38 +44,42 @@ No coding necessary!
 
 With the Benchmark Email Lite plugin, you can quickly and easily place a signup form anywhere you want on your site. It’s also super simple to customize your forms.
 
+
 == Installation ==
 
-Update Instructions
+= Installing the plugin =
 
-1. Click to have the Plugin updated.
-1. Click Benchmark Email Lite on the administration sidebar menu. Click the Settings tab. Check to ensure that you are properly connected.
-1. Navigate to Appearance, Widgets. Expand the Widget options for any existing sign-up form widgets. Verify that the settings are all correct. Click Save when you're all done.
+1. In your WordPress admin panel, go to Plugins > New Plugin, search for Benchmark Email Lite and click "Install now".
+2. Alternatively, download the plugin and upload the contents of benchmark-email-lite.zip to your plugins directory, which usually is /wp-content/plugins/.
+3. Activate the plugin.
 
-New Automatic Installation
+= Initial setup =
 
-1. Log in to your blog and go to the Plugins page.
-1. Click Add New button.
-1. Search for Benchmark Email Lite.
-1. Click Install Now link.
-1. (sometimes required) Enter your FTP or FTPS username and password, as provided by your web host.
-1. Click Activate Plugin link.
-1. If you are creating a new Benchmark Email account, please use the link [https://www.benchmarkemail.com?p=68907](https://www.benchmarkemail.com?p=68907 "Try Benchmark Email").
-1. Click on the Benchmark menu item to connect the plugin to your Benchmark account.
+1. If you are creating a new Benchmark Email account, [get a FREE account here](https://www.benchmarkemail.com?p=68907 "get a FREE Benchmark Email account!").
+2. In your WordPress admin panel, go to Benchmark > Settings.
+3. Click "Connect to Benchmark".
+4. Enter your Benchmark Email username and click "OK".
+5. Enter your Benchmark Email password and click "OK".
 
-New Manual Installation
-
-1. Download the Plugin and un-zip it.
-1. Upload the `benchmark-email-lite` folder to your `wp-content/plugins/` directory.
-1. Activate the Plugin through the Plugins menu in WordPress.
-1. If you are creating a new Benchmark Email account, please use the link [https://www.benchmarkemail.com?p=68907](https://www.benchmarkemail.com?p=68907 "Try Benchmark Email").
-1. Click on the Benchmark menu item to connect the plugin to your Benchmark account.
 
 == Frequently Asked Questions ==
 
 = Q1: Where do I go for help with any issues? =
 
 Please call Benchmark Email at (800) 430-4095.
+
+= Q2: Can I use Contact Form 7 (Gravity Forms, etc.) with this plugin? =
+
+Yes. The plugin does not directly use any form frameworks other than native Benchmark Email signup forms. As with most WordPress projects, you can bridge the two together with custom code. We've assembled an example based on Contact Form 7. Install the [Code Snippets plugin](https://wordpress.org/plugins/code-snippets/), import the [sample code file](https://www.dropbox.com/s/hvgfsl7nttjrx3s/connect-contact-form-7-form-with-benchmark-email-contact-list.code-snippets.json?dl=0), edit the code snippet to change the list ID mappings within the code and tailor the form field names to match your form (or visa-versa), then enable the code snippet and test.
+
+= Q3: What is an RSS email campaign? How to use? =
+
+RSS campaigns send out a digest of blog posts on a schedule using your RSS feed URL. Further details can be found here: https://kb.benchmarkemail.com/how-do-i-create-an-rss-to-email-campaign/
+
+Inside your WordPress Admin area, select Benchmark > Interface. Navigate to Emails > Create > RSS Email > Drag/Drop.
+
+Enter your WordPress URL, which is your website followed by /feed. You may wish to filter the posts by category or tag, for example: https://codedcommerce.com/category/marketing-tips/feed. You may also use category IDs and filter nagatively to exclude a comma-separated list of them, for example: https://codedcommerce.com/?cat=-52047&feed=rss2
+
 
 == Screenshots ==
 
@@ -83,11 +90,8 @@ Please call Benchmark Email at (800) 430-4095.
 5. This is a sample signup form on a page sidebar with TwentyNinteen theme.
 6. This is a sample pop-up signup form being used on a home page. 
 
+
 == Changelog ==
-
-= 3.3 on 2020-XX-YY =
-
-* Fixed: plugin action link for Settings page.
 
 = 3.2 on 2020-03-12 =
 
@@ -362,11 +366,8 @@ Please call Benchmark Email at (800) 430-4095.
 
 * Added: Initial Plugin release.
 
+
 == Upgrade Notice ==
-
-= 3.3 =
-
-* Bug fix release.
 
 = 3.2 =
 

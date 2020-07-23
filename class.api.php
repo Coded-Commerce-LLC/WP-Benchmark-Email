@@ -224,32 +224,32 @@ class wpbme_api {
 		$emailID = empty( $response->ID ) ? '' : intval( $response->ID );
 		if( ! $emailID ) { return $response; }
 
-		// Obtain Template
+		// Obtain Drag And Drop Template
 		$body = [ 'EmailID' => $emailID ];
 		$response = wpbme_api::benchmark_query( 'Emails/Template/317', 'PATCH', $body );
-		$html = empty( $response->TemplateContent ) ? '' : $response->TemplateContent;
-		if( ! $html ) { return $response; }
+		$TemplateContent = empty( $response->TemplateContent ) ? '' : $response->TemplateContent;
+		if( ! $TemplateContent ) { return $response; }
 
-		// Tweak Template
+		// Set Post Body Into Template
 		$post = get_post( $post_id );
-		$tweak = sprintf(
+		$post_title = apply_filters( 'wpbme_post_title', $post->post_title, $post_id );
+		$post_content = apply_filters( 'the_content', $post->post_content );
+		$post_content = apply_filters( 'wpbme_post_content', $post_content, $post_id );
+		$post_html = sprintf(
 			'
-				<div style="%s">%s</div>
-				<div style="%s">%s</div>
-				<span style="%s"><a href="%s" target="_new" style="%s">Read More</a></span>
+				<h1>%s</h1>
+				%s
+				<p><a href="%s" target="_blank">%s</a></p>
 			',
-			'font-weight: normal; font-size: 14px;line-height: 150%;font-weight: bold;',
-			$post->post_title,
-			'font-size: 12px; line-height: 150%;',
-			$post->post_content,
-			'font-size: 12px; color:#31ade0; line-height: 150%;',
+			$post_title,
+			$post_content,
 			get_permalink( $post_id ),
-			'color:inherit;'
+			__( 'Read more', 'benchmark-email-lite' )
 		);
-		$html = str_replace( '#RSSCONTENT#', $tweak, $html );
+		$TemplateContent = str_replace( '#RSSCONTENT#', $post_html, $TemplateContent );
 
 		// Send Template To Email
-		$body = [ 'Detail' => [ 'TemplateContent' => $html ] ];
+		$body = [ 'Detail' => [ 'TemplateContent' => $TemplateContent ] ];
 		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $body );
 		return $emailID;
 	}
