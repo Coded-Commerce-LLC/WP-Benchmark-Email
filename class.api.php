@@ -331,8 +331,8 @@ class wpbme_api {
 		// Return
 		return [
 			'wpbme_ap_token' => $wpbme_ap_token,
+			'wpbme_key' => $wpbme_key,
 			'wpbme_temp_token' => $wpbme_temp_token,
-			'wpbme_key' => $wpbme_key
 		];
 	}
 

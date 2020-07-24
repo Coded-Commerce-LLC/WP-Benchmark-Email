@@ -18,24 +18,6 @@ class wpbme_settings {
 		// Apply Updates
 		$updated = false;
 
-		// API Key Update
-		if( isset( $_POST[ 'wpbme_key' ] ) ) {
-			update_option( 'wpbme_key', sanitize_text_field( $_POST[ 'wpbme_key' ] ) );
-			$updated = true;
-		}
-
-		// Temp Token Update
-		if( isset( $_POST[ 'wpbme_temp_token' ] ) ) {
-			update_option( 'wpbme_temp_token', sanitize_text_field( $_POST[ 'wpbme_temp_token' ] ) );
-			$updated = true;
-		}
-
-		// Automation Pro Token Update
-		if( isset( $_POST[ 'wpbme_ap_token' ] ) ) {
-			update_option( 'wpbme_ap_token', esc_attr( $_POST[ 'wpbme_ap_token' ] ) );
-			$updated = true;
-		}
-
 		// Tracker Disablement Update
 		if( isset( $_POST[ 'wpbme_tracking_disable' ] ) && $_POST[ 'wpbme_tracking_disable' ] == 'yes' ) {
 			update_option( 'wpbme_tracking_disable', 'yes' );
@@ -63,6 +45,71 @@ class wpbme_settings {
 			$updated = true;
 		}
 
+		// Authentication Needed
+		if( ! get_option( 'wpbme_key' ) ) {
+
+			// Maybe Run Authentication
+			$auth_error = false;
+			if( isset( $_POST['BME_USERNAME'] ) && isset( $_POST['BME_PASSWORD'] ) ) {
+				$response = wpbme_api::authenticate(
+					esc_attr( $_POST['BME_USERNAME'] ),
+					esc_attr( $_POST['BME_PASSWORD'] )
+				);
+				if( $response && isset( $response['wpbme_key'] ) ) {
+					update_option( 'wpbme_key', $response['wpbme_key'] );
+					update_option( 'wpbme_temp_token', $response['wpbme_temp_token'] );
+					update_option( 'wpbme_ap_token', $response['wpbme_ap_token'] );
+					$updated = true;
+				} else {
+					$auth_error = true;
+				}
+			}
+
+			// Show Authentication Form
+			if( ! get_option( 'wpbme_key' ) ) {
+				?>
+
+				<div class="wrap">
+					<h1><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h1>
+					<br />
+
+					<?php if( $auth_error ) { ?>
+						<div class="notice notice-success is-dismissible">
+							<p><?php _e( 'The credential failed to authenticate.', 'benchmark-email-lite' ); ?></p>
+						</div>
+					<?php } ?>
+
+					<form name="wbme_settings_form" method="post" action="">
+						<h2><?php _e( 'Benchmark Email Connection', 'benchmark-email-lite' ); ?></h2>
+						<p>
+							<a href="https://www.benchmarkemail.com?p=68907" target="_blank">
+								<?php _e( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' ); ?>
+							</a>
+						</p>
+						<p>
+							<label style="display: block;">
+								<?php _e( 'Benchmark Username', 'benchmark-email-lite' ); ?><br />
+								<input type="text" name="BME_USERNAME" />
+							</label>
+						</p>
+						<p>
+							<label style="display: block;">
+								<?php _e( 'Benchmark Password', 'benchmark-email-lite' ); ?><br />
+								<input type="password" name="BME_PASSWORD" />
+							</label>
+						</p>
+						<p class="submit">
+							<input type="submit" name="Submit" class="button-primary"
+								value="<?php esc_attr_e( 'Connect to Benchmark', 'benchmark-email-lite' ) ?>" />
+						</p>
+					</form>
+				</div>
+
+				<?php
+				return;
+			}
+		}
+
 		// Update Made
 		if( $updated ) {
 			wpbme_api::update_partner();
@@ -87,34 +134,7 @@ class wpbme_settings {
 			<h1><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h1>
 			<br />
 			<form name="wbme_settings_form" method="post" action="">
-				<h2><?php _e( 'Benchmark Email Credentials', 'benchmark-email-lite' ); ?></h2>
-				<p>
-					<?php
-					$link_to_ui = sprintf(
-						' <a href="%s">%s</a>',
-						admin_url( 'admin.php?page=wpbme_interface' ),
-						__( 'Proceed to Benchmark Interface', 'benchmark-email-lite' )
-					);
-					echo sprintf(
-						'
-							<p><strong style="color:%s;">%s</strong></p>
-							<p><a id="get_api_key" class="button" href="#">%s</a></p>
-						',
-						$wpbme_key && $wpbme_temp_token ? 'green' : 'red',
-						$wpbme_key && $wpbme_temp_token
-							? __( 'You are connected!', 'benchmark-email-lite' ) . $link_to_ui
-							: __( 'You are not connected.', 'benchmark-email-lite' )
-							. sprintf(
-								' <a href="%s">%s</a>',
-								'https://www.benchmarkemail.com?p=68907',
-								__( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' )
-							),
-						$wpbme_key && $wpbme_temp_token
-							? __( 'Re-connect to Benchmark', 'benchmark-email-lite' )
-							: __( 'Connect to Benchmark', 'benchmark-email-lite' )
-					);
-						?>
-				</p>
+				<h2><?php _e( 'Benchmark Email Connection', 'benchmark-email-lite' ); ?></h2>
 				<p>
 					<label style="display: block;">
 						<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />

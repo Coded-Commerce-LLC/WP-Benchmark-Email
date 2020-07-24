@@ -3,24 +3,6 @@
 // Exit If Accessed Directly
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
-// Admin JavaScripts
-add_action( 'admin_enqueue_scripts', function() {
-	wp_enqueue_script( 'wpbme_admin', plugin_dir_url( __FILE__ ) . 'admin.js', [ 'jquery' ], null );
-} );
-
-// AJAX: Admin Action Handler
-add_action( 'wp_ajax_wpbme_action', function() {
-	if( empty( $_POST['sync'] ) ) { return; }
-	switch( $_POST['sync'] ) {
-
-		// API Key
-		case 'get_api_key':
-			if( empty( $_POST['user'] ) || empty( $_POST['pass'] ) ) { return; }
-			$response = wpbme_api::authenticate( $_POST['user'], $_POST['pass'] );
-			wp_send_json( $response );
-	}
-} );
-
 // Plugins Page Link To Settings
 add_filter( 'plugin_action_links_benchmark-email-lite/benchmark-email-lite.php', function( $links ) {
 	$settings = [
