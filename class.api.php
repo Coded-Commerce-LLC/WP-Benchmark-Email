@@ -179,12 +179,11 @@ class wpbme_api {
 	}
 
 	// Creates Email Campaign
-	static function create_email( $name, $subject, $from_name, $from_email, $post_id='' ) {
-		$uri = 'Emails/';
+	static function create_email( $name, $subject, $from_name, $from_email, $post_id ) {
 
-		// Set Lists
+		// Set Sending Lists
 		$lists = self::get_lists();
-		if( ! is_array( $lists ) ) { return; }
+		if( ! is_array( $lists ) ) { return 'NO_LISTS'; }
 		$to_lists = [];
 		foreach( $lists as $list ) {
 			if( empty( $list->ID ) ) { continue; }
@@ -198,7 +197,7 @@ class wpbme_api {
 				$to_lists[] = [ 'ID' => $list->ID ];
 			}
 		}
-		if( ! $to_lists ) { return 'No Contact Lists'; }
+		if( ! $to_lists ) { return 'NO_LIST_SELECTED'; }
 
 		// Create Email
 		$body = [
@@ -213,11 +212,11 @@ class wpbme_api {
 				'ReplyEmail' => $from_email,
 				'Subject' => $subject,
 				'Version' => 420,
-				//'HasPermissionReminderMessage' => 1,
-				//'IsRSS'	=> 1,
-				//'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
-				//	? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
-				//	: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
+				// 'HasPermissionReminderMessage' => 1,
+				// 'IsRSS'	=> 1,
+				// 'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
+				//		? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
+				//		: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
 			]
 		];
 		$response = wpbme_api::benchmark_query( 'Emails/', 'POST', $body );
@@ -231,24 +230,28 @@ class wpbme_api {
 		if( ! $TemplateContent ) { return $response; }
 
 		// Set Post Body Into Template
+		$post_title = '';
+		$post_content = '';
 		$post = get_post( $post_id );
-		$post_title = apply_filters( 'wpbme_post_title', $post->post_title, $post_id );
-		$post_content = apply_filters( 'the_content', $post->post_content );
-		$post_content = apply_filters( 'wpbme_post_content', $post_content, $post_id );
-		$post_html = sprintf(
+		if( $post ) {
+			$post_title = $post->post_title;
+			$post_content = apply_filters( 'the_content', $post->post_content );
+		}
+		$email_html = sprintf(
 			'
 				<h1>%s</h1>
-				%s
+				<div>%s</div>
 				<p><a href="%s" target="_blank">%s</a></p>
 			',
-			$post_title,
-			$post_content,
+			apply_filters( 'wpbme_post_title', $post_title, $post ),
+			apply_filters( 'wpbme_post_content', $post_content, $post ),
 			get_permalink( $post_id ),
 			__( 'Read more', 'benchmark-email-lite' )
 		);
-		$TemplateContent = str_replace( '#RSSCONTENT#', $post_html, $TemplateContent );
+		$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
 
 		// Send Template To Email
+		$TemplateContent = str_replace( '#RSSCONTENT#', $email_html, $TemplateContent );
 		$body = [ 'Detail' => [ 'TemplateContent' => $TemplateContent ] ];
 		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $body );
 		return $emailID;
