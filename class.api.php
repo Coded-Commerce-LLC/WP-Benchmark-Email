@@ -315,14 +315,14 @@ class wpbme_api {
 			'POST',
 			[ 'Username' => $user, 'Password' => $pass ]
 		);
-		if( ! isset( $response->Response->Token ) ) { return; }
+		if( empty( $response->Response->Token ) ) { return; }
 		$wpbme_temp_token = trim( $response->Response->Token );
 
 		// Use Temporary Token To Get API Key
 		$response = self::benchmark_query(
 			'Client/Setting', 'GET', null, $wpbme_temp_token
 		);
-		if( ! isset( $response->Response->Token ) ) { return; }
+		if( empty( $response->Response->Token ) ) { return; }
 		$wpbme_key = trim( $response->Response->Token );
 
 		// Use Temporary Token To Get AP Token

@@ -10,10 +10,10 @@ jQuery( document ).ready( function( $ ) {
 
 		// Prompt User And Pass
 		var user = prompt(
-			"Please enter your Benchmark Email username", ''
+			'Please enter your Benchmark Email username', ''
 		);
 		var pass = prompt(
-			"Please enter your Benchmark Email password", ''
+			'Please enter your Benchmark Email password', ''
 		);
 
 		// Validate Input
@@ -26,17 +26,16 @@ jQuery( document ).ready( function( $ ) {
 			'user': user,
 			'pass': pass
 		};
-		$( 'input#wpbme_key' ).val( 'Loading...' );
-		$( 'input#wpbme_temp_token' ).val( 'Loading...' );
-		$( 'input#wpbme_ap_token' ).val( 'Loading...' );
 		$.post( ajaxurl, data, function( response ) {
 
 			// Process Response
-			if( response != '' ) {
+			if( response ) {
 				$( 'input#wpbme_key' ).val( response.wpbme_key );
 				$( 'input#wpbme_temp_token' ).val( response.wpbme_temp_token );
 				$( 'input#wpbme_ap_token' ).val( response.wpbme_ap_token );
 				$( 'form[name=wbme_settings_form]' ).submit();
+			} else {
+				alert( 'Sorry; the credentials failed to authenticate.' );
 			}
 		} );
 	} );
