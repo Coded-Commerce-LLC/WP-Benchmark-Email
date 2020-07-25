@@ -163,14 +163,16 @@ class wpbme_settings {
 					<label>
 						<?php $wpbme_tracking_disable = $wpbme_tracking_disable == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_tracking_disable" name="wpbme_tracking_disable" value="yes" <?php echo $wpbme_tracking_disable; ?> />
-						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?>
+						<?php _e( 'Disable visitor tracking?', 'benchmark-email-lite' ); ?><br />
+						<em><?php _e( 'Optionally disable the front-end visitor tracker used by Automation Pro conversion tracking.', 'benchmark-email-lite' ); ?></em>
 					</label>
 				</p>
 				<p>
 					<label>
 						<?php $wpbme_usage_disable = $wpbme_usage_disable == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_usage_disable" name="wpbme_usage_disable" value="yes" <?php echo $wpbme_usage_disable; ?> />
-						<?php _e( 'Disable admin usage tracking?', 'benchmark-email-lite' ); ?>
+						<?php _e( 'Disable admin usage tracking?', 'benchmark-email-lite' ); ?><br />
+						<em><?php _e( 'Optionally disable aggregate usage statistics for the developer of this plugin.', 'benchmark-email-lite' ); ?></em>
 					</label>
 				</p>
 				<?php if( class_exists( 'WooCommerce' ) ) { ?>
@@ -178,10 +180,13 @@ class wpbme_settings {
 					<label>
 						<?php $wpbme_debug = $wpbme_debug == 'yes' ? 'checked="checked"' : ''; ?>
 						<input type="checkbox" id="wpbme_debug" name="wpbme_debug" value="yes" <?php echo $wpbme_debug; ?> />
-						<?php _e( 'Enable debugging?', 'benchmark-email-lite' ); ?>
-						<a href="<?php echo admin_url( 'admin.php?page=wc-status&tab=logs' ); ?>">
-							<?php _e( 'Logs are stored in WooCommerce', 'benchmark-email-lite' ); ?>
-						</a>
+						<?php _e( 'Enable debugging?', 'benchmark-email-lite' ); ?><br />
+						<em><?php _e( 'Optionally enable logging of all API communications into WooCommerce, as available.', 'benchmark-email-lite' ); ?></em>
+						<p>
+							<a href="<?php echo admin_url( 'admin.php?page=wc-status&tab=logs' ); ?>">
+								<?php _e( 'Logs are stored in WooCommerce', 'benchmark-email-lite' ); ?>
+							</a>
+						</p>
 					</label>
 				</p>
 				<?php } ?>
