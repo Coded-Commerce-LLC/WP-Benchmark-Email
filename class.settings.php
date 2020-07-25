@@ -18,6 +18,20 @@ class wpbme_settings {
 		// Apply Updates
 		$updated = false;
 
+		// Auth Keys Update
+		if( isset( $_POST[ 'wpbme_ap_token' ] ) ) {
+			update_option( 'wpbme_ap_token', esc_attr( $_POST[ 'wpbme_ap_token' ] ) );
+			$updated = true;
+		}
+		if( isset( $_POST[ 'wpbme_key' ] ) ) {
+			update_option( 'wpbme_key', esc_attr( $_POST[ 'wpbme_key' ] ) );
+			$updated = true;
+		}
+		if( isset( $_POST[ 'wpbme_temp_token' ] ) ) {
+			update_option( 'wpbme_temp_token', esc_attr( $_POST[ 'wpbme_temp_token' ] ) );
+			$updated = true;
+		}
+
 		// Tracker Disablement Update
 		if( isset( $_POST[ 'wpbme_tracking_disable' ] ) && $_POST[ 'wpbme_tracking_disable' ] == 'yes' ) {
 			update_option( 'wpbme_tracking_disable', 'yes' );
@@ -49,19 +63,20 @@ class wpbme_settings {
 		if( ! get_option( 'wpbme_key' ) ) {
 
 			// Maybe Run Authentication
-			$auth_error = false;
+			$auth_update = null;
 			if( isset( $_POST['BME_USERNAME'] ) && isset( $_POST['BME_PASSWORD'] ) ) {
 				$response = wpbme_api::authenticate(
 					esc_attr( $_POST['BME_USERNAME'] ),
 					esc_attr( $_POST['BME_PASSWORD'] )
 				);
 				if( $response && isset( $response['wpbme_key'] ) ) {
+					update_option( 'wpbme_ap_token', $response['wpbme_ap_token'] );
 					update_option( 'wpbme_key', $response['wpbme_key'] );
 					update_option( 'wpbme_temp_token', $response['wpbme_temp_token'] );
-					update_option( 'wpbme_ap_token', $response['wpbme_ap_token'] );
 					$updated = true;
+					$auth_update = true;
 				} else {
-					$auth_error = true;
+					$auth_update = false;
 				}
 			}
 
@@ -73,9 +88,13 @@ class wpbme_settings {
 					<h1><?php _e( 'Benchmark Email Settings', 'benchmark-email-lite' ); ?></h1>
 					<br />
 
-					<?php if( $auth_error ) { ?>
-						<div class="notice notice-success is-dismissible">
+					<?php if( $auth_update === false ) { ?>
+						<div class="notice notice-error is-dismissible">
 							<p><?php _e( 'The credential failed to authenticate.', 'benchmark-email-lite' ); ?></p>
+						</div>
+					<?php } elseif( $auth_update === true ) { ?>
+						<div class="notice notice-success is-dismissible">
+							<p><?php _e( 'Your login was successful and access keys have been saved.', 'benchmark-email-lite' ); ?></p>
 						</div>
 					<?php } ?>
 
