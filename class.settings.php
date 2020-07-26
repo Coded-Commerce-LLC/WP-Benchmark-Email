@@ -150,6 +150,15 @@ class wpbme_settings {
 					?>
 
 					<h2><?php _e( 'Benchmark connection settings', 'benchmark-email-lite' ); ?></h2>
+
+					<?php if( ! get_option( 'wpbme_key' ) ) { ?>
+					<p>
+						<a href="admin.php?page=wpbme_settings">
+							<?php _e( 'Authenticate with username and password', 'benchmark-email-lite' ); ?>
+						</a>
+					</p>
+					<?php } ?>
+
 					<p>
 						<label style="display: block;">
 							<?php _e( 'API Key', 'benchmark-email-lite' ); ?><br />
