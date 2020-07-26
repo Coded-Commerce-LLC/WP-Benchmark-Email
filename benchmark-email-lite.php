@@ -3,7 +3,7 @@
  * Plugin Name: Benchmark Email Lite
  * Plugin URI: https://www.benchmarkemail.com
  * Description: Connects WordPress with Benchmark Email for newsletter sign-up forms and post-to-email campaigns.
- * Version: 3.2.1
+ * Version: 3.2.2
  * Author: Coded Commerce, LLC
  * Author URI: https://codedcommerce.com
  * Developer: Sean Conklin

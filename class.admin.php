@@ -27,22 +27,54 @@ add_filter( 'post_row_actions', function( $actions, $post ) {
 
 // Adds UI Controller Page
 add_action( 'admin_menu', function() {
+
+	// Check Authentications
+	$wpbme_key = get_option( 'wpbme_key' );
+	$wpbme_temp_token = get_option( 'wpbme_temp_token' );
+
+	// Main Menu Item
+	$default_panel = $wpbme_temp_token ?  'wpbme_interface' : 'wpbme_settings';
 	add_menu_page(
 		'Benchmark',
 		'Benchmark',
 		'manage_options',
-		'wpbme_interface',
+		$default_panel,
 		[ 'wpbme_admin', 'page_interface' ],
 		'dashicons-email'
 	);
-	add_submenu_page(
-		'wpbme_interface',
-		'Interface',
-		'Interface',
-		'manage_options',
-		'wpbme_interface',
-		[ 'wpbme_admin', 'page_interface' ]
-	);
+
+	// UI Panel When UI Authenticated
+	if( $wpbme_temp_token ) {
+		add_submenu_page(
+			'wpbme_interface',
+			'Interface',
+			'Interface',
+			'manage_options',
+			'wpbme_interface',
+			[ 'wpbme_admin', 'page_interface' ]
+		);
+	}
+
+	// Signup Panels When API Authenticated
+	if( $wpbme_key ) {
+		add_submenu_page(
+			'wpbme_interface',
+			'Signup Form Widgets',
+			'Signup Form Widgets',
+			'manage_options',
+			'widgets.php'
+		);
+		add_submenu_page(
+			'wpbme_interface',
+			'Shortcodes',
+			'Shortcodes',
+			'manage_options',
+			'wpbme_shortcodes',
+			[ 'wpbme_admin', 'page_shortcodes' ]
+		);
+	}
+
+	// Settings Panel
 	add_submenu_page(
 		'wpbme_interface',
 		'Settings',
@@ -51,21 +83,7 @@ add_action( 'admin_menu', function() {
 		'wpbme_settings',
 		[ 'wpbme_settings', 'page_settings' ]
 	);
-	add_submenu_page(
-		'wpbme_interface',
-		'Signup Form Widgets',
-		'Signup Form Widgets',
-		'manage_options',
-		'widgets.php'
-	);
-	add_submenu_page(
-		'wpbme_interface',
-		'Shortcodes',
-		'Shortcodes',
-		'manage_options',
-		'wpbme_shortcodes',
-		[ 'wpbme_admin', 'page_shortcodes' ]
-	);
+
 } );
 
 // Class For Namespacing Functions
@@ -137,9 +155,7 @@ class wpbme_admin {
 
 		// Get Authenticated Redirect
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
-		if( ! $redirect_url ) {
-			wp_redirect( admin_url( 'admin.php?page=wpbme_settings' ) );
-		}
+		if( ! $redirect_url ) { return; }
 
 		// Output
 		echo sprintf(
