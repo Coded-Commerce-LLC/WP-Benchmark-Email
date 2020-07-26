@@ -68,9 +68,9 @@ With the Benchmark Email Lite plugin, you can quickly and easily place a signup 
 
 Please call Benchmark Email at (800) 430-4095.
 
-= Q2: Can I use Contact Form 7 (Gravity Forms, etc.) with this plugin? =
+= Q2: The Benchmark Interface panel is not authenticating. =
 
-Yes. The plugin does not directly use any form frameworks other than native Benchmark Email signup forms. As with most WordPress projects, you can bridge the two together with custom code. We've assembled an example based on Contact Form 7. Install the [Code Snippets plugin](https://wordpress.org/plugins/code-snippets/), import the [sample code file](https://www.dropbox.com/s/hvgfsl7nttjrx3s/connect-contact-form-7-form-with-benchmark-email-contact-list.code-snippets.json?dl=0), edit the code snippet to change the list ID mappings within the code and tailor the form field names to match your form (or visa-versa), then enable the code snippet and test.
+Most browsers block the authentication cookies between the main window (WordPress) and the inline frame window (Benchmark) for security (CORS). This can be overcome by clicking the link we provide to open in a new tab. Following that, if you quit your browser and log back into your WordPress site the frame should load properly from then point onward. If you continue to have problems, try logging into [Benchmark UI](https://ui.benchmarkemail.com) directly, then quit your browser and log back into WordPress site. Taking these steps should return the Interface to an authenticated state.
 
 = Q3: What is an RSS email campaign? How to use? =
 
@@ -79,6 +79,10 @@ RSS campaigns send out a digest of blog posts on a schedule using your RSS feed 
 Inside your WordPress Admin area, select Benchmark > Interface. Navigate to Emails > Create > RSS Email > Drag/Drop.
 
 Enter your WordPress URL, which is your website followed by /feed. You may wish to filter the posts by category or tag, for example: https://codedcommerce.com/category/marketing-tips/feed. You may also use category IDs and filter nagatively to exclude a comma-separated list of them, for example: https://codedcommerce.com/?cat=-52047&feed=rss2
+
+= Q4: Can I use Contact Form 7 (Gravity Forms, etc.) with this plugin? =
+
+Yes. The plugin does not directly use any form frameworks other than native Benchmark Email signup forms. As with most WordPress projects, you can bridge the two together with custom code. We've assembled an example based on Contact Form 7. Install the [Code Snippets plugin](https://wordpress.org/plugins/code-snippets/), import the [sample code file](https://www.dropbox.com/s/hvgfsl7nttjrx3s/connect-contact-form-7-form-with-benchmark-email-contact-list.code-snippets.json?dl=0), edit the code snippet to change the list ID mappings within the code and tailor the form field names to match your form (or visa-versa), then enable the code snippet and test.
 
 
 == Screenshots ==
