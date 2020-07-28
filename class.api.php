@@ -181,58 +181,57 @@ class wpbme_api {
 	// Creates Email Campaign
 	static function create_email( $name, $subject, $from_name, $from_email, $post_id ) {
 
-		// Set Sending Lists
+		// Start Setting-up Email Campaign
+		$body = [
+			'Detail' => [
+				'ContactLists' => [],
+				'EmailType' => '',
+				'FromEmail' => $from_email,
+				'FromName' => $from_name,
+				'HasWebpageVersion' => 1,
+				'LayoutID' => '',
+				'Name' => $name,
+				'ReplyEmail' => $from_email,
+				'Subject' => $subject,
+				'TemplateCode' => '',
+				'TemplateContent' => '',
+				'TemplateID' => '',
+				'Version' => 420,
+			]
+		];
+
+		// Set Default Contact List
 		$lists = self::get_lists();
-		if( ! is_array( $lists ) ) { return 'NO_LISTS'; }
+		if( ! is_array( $lists ) ) { return 'No Contact Lists'; }
 		$to_lists = [];
+		$default_lists = [
+			strtolower( 'Sample Contact List' ),
+			strtolower( 'Muestra de Lista de Contacto' ),
+			strtolower( 'Amostra de Lista de Contatos' ),
+			strtolower( 'サンプルリスト' ),
+		];
 		foreach( $lists as $list ) {
 			if( empty( $list->ID ) ) { continue; }
-			$default_lists = [
-				strtolower( 'Sample Contact List' ),
-				strtolower( 'Muestra de Lista de Contacto' ),
-				strtolower( 'Amostra de Lista de Contatos' ),
-				strtolower( 'サンプルリスト' ),
-			];
 			if( in_array( strtolower( $list->Name ), $default_lists ) ) {
 				$to_lists[] = [ 'ID' => $list->ID ];
 			}
 		}
-		if( ! $to_lists ) { return 'NO_LIST_SELECTED'; }
+		$body['Detail']['ContactLists'] = $to_lists;
 
-		// Create Email
-		$body = [
-			'Detail' => [
-				'ContactLists' => $to_lists,
-				'EmailType' => 'DD',
-				'FromEmail' => $from_email,
-				'FromName' => $from_name,
-				'HasWebpageVersion' => 1,
-				'LayoutID' => 10,
-				'Name' => $name,
-				'ReplyEmail' => $from_email,
-				'Subject' => $subject,
-				'Version' => 420,
-				// 'HasPermissionReminderMessage' => 1,
-				// 'IsRSS'	=> 1,
-				// 'RSSURL' => strstr( get_permalink( $post_id ), 'localhost' )
-				//		? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
-				//		: get_permalink( $post_id ) . 'feed/?withoutcomments=1',
-			]
-		];
+		// Handle No Lists Found
+		if( ! $to_lists ) { return 'No Contact Lists'; }
+
+		// Create Email Campaign
 		$response = wpbme_api::benchmark_query( 'Emails/', 'POST', $body );
 		$emailID = empty( $response->ID ) ? '' : intval( $response->ID );
 		if( ! $emailID ) { return $response; }
 
-		// Obtain Drag And Drop Template
-		$body = [ 'EmailID' => $emailID ];
-		$response = wpbme_api::benchmark_query( 'Emails/Template/317', 'PATCH', $body );
-		$TemplateContent = empty( $response->TemplateContent ) ? '' : $response->TemplateContent;
-		if( ! $TemplateContent ) { return $response; }
+		// Get WP Post
+		$post = get_post( $post_id );
 
-		// Set Post Body Into Template
+		// Assemble Post Body
 		$post_title = '';
 		$post_content = '';
-		$post = get_post( $post_id );
 		if( $post ) {
 			$post_title = $post->post_title;
 			$post_content = apply_filters( 'the_content', $post->post_content );
@@ -248,12 +247,52 @@ class wpbme_api {
 			get_permalink( $post_id ),
 			__( 'Read more', 'benchmark-email-lite' )
 		);
-		$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
 
-		// Send Template To Email
-		$TemplateContent = str_replace( '#RSSCONTENT#', $email_html, $TemplateContent );
-		$body = [ 'Detail' => [ 'TemplateContent' => $TemplateContent ] ];
+		// Get Format
+		$wpbme_email_type = apply_filters( 'wpbme_email_type', 'DD', $post );
+
+		// Email Campaign Setup
+		switch( $wpbme_email_type ) {
+
+			// Raw HTML Formatting
+			case 'Custom':
+				$email_html = sprintf( '<html><body>%s</body></html>', $email_html );
+				$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
+				$body['Detail']['EmailType'] = 'Custom';
+				$body['Detail']['TemplateCode'] = $email_html;
+				$body['Detail']['TemplateContent'] = $email_html; 
+				$body['Detail']['TemplateID'] = -1;
+				$body['Detail']['Version'] = 402;
+				break;
+
+			// Default Drag/Drop Editing
+			default:
+
+				// Apply Drag And Drop Template
+				$response = wpbme_api::benchmark_query(
+					'Emails/Template/317', 'PATCH', [ 'EmailID' => $emailID ]
+				);
+				$TemplateContent = empty( $response->TemplateContent ) ? '' : $response->TemplateContent;
+				if( ! $TemplateContent ) { return $response; }
+
+				// Set Content To Drag And Drop Template
+				$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
+				$TemplateContent = str_replace( '#RSSCONTENT#', $email_html, $TemplateContent );
+				$body['Detail']['EmailType'] = 'DD';
+				$body['Detail']['LayoutID'] = 10;
+				$body['Detail']['TemplateContent'] = $TemplateContent;
+
+				//$body['Detail']['HasPermissionReminderMessage'] = 1;
+				//$body['Detail']['IsRSS'] = 1;
+				//$body['Detail']['RSSURL'] = strstr( get_permalink( $post_id ), 'localhost' )
+				//		? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
+				//		: get_permalink( $post_id ) . 'feed/?withoutcomments=1';
+		}
+
+		// Apply Template To Email Campaign
 		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $body );
+
+		// Return Int
 		return $emailID;
 	}
 
