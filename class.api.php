@@ -385,6 +385,11 @@ class wpbme_api {
 			self::authenticate_ui_renew();
 		}
 
+		// Skip Querystring Redirects Due To URL Encoding Bug In The Below API
+		if( strchr( $destination_uri, '?' ) ) {
+			return untrailingslashit( self::$url_ui ) . $destination_uri;
+		}
+
 		// Request UI Auth Redirect
 		$url = self::$url_ui . 'xdc/json/login_redirect_using_token';
 		$body = sprintf(
@@ -397,12 +402,13 @@ class wpbme_api {
 		self::logger( $url, $args, $response );
 
 		// Process Response
-		if( ! is_wp_error( $response ) ) {
-			$response = wp_remote_retrieve_body( $response );
-			$response = json_decode( $response );
-			return empty( $response->redirectURL )
-				? false : untrailingslashit( self::$url_ui ) . $response->redirectURL;
-		}
+		if( is_wp_error( $response ) ) { return false; }
+		$response = wp_remote_retrieve_body( $response );
+		$response = json_decode( $response );
+		if( empty( $response->redirectURL ) ) { return false; }
+
+		// Output
+		return untrailingslashit( self::$url_ui ) . $response->redirectURL;
 	}
 
 	// Maybe Renew Temporary Token
