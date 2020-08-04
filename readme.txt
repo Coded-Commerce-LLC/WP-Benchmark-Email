@@ -4,7 +4,7 @@ Donate link: https://codedcommerce.com/donate
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
 Requires at least: 4.9.15
 Requires PHP: 7.2
-Tested up to: 5.4.2
+Tested up to: 5.5
 Stable tag: 3.2
 License: GPLv2 (or later)
 
@@ -84,6 +84,17 @@ Enter your WordPress URL, which is your website followed by /feed. You may wish 
 
 Yes. The plugin does not directly use any form frameworks other than native Benchmark Email signup forms. As with most WordPress projects, you can bridge the two together with custom code. We've assembled an example based on Contact Form 7. Install the [Code Snippets plugin](https://wordpress.org/plugins/code-snippets/), import the [sample code file](https://www.dropbox.com/s/hvgfsl7nttjrx3s/connect-contact-form-7-form-with-benchmark-email-contact-list.code-snippets.json?dl=0), edit the code snippet to change the list ID mappings within the code and tailor the form field names to match your form (or visa-versa), then enable the code snippet and test.
 
+= Q5: Can I programmatically filter the HTML email campaigns? =
+
+Yes. In v3.3 we've added new hooks you can use in your custom functions. The new hooks are:
+
+1. `add_filter( 'wpbme_post_title', function( $value, $post ) { return $value; }, 10, 2 );`
+2. `add_filter( 'wpbme_post_content', function( $value, $post ) { return $value; }, 10, 2 );`
+3. `add_filter( 'wpbme_email_type', function( $value, $post ) { return $value; }, 10, 2 );`
+4. `add_filter( 'wpbme_email_html', function( $value, $post ) { return $value; }, 10, 2 );`
+
+These filter the blog post title, the content body, the email type and generated HTML body. The email type is `DD` for the drop-down email editor and can be changed to `Custom` when doing raw HTML.
+
 
 == Screenshots ==
 
@@ -96,6 +107,17 @@ Yes. The plugin does not directly use any form frameworks other than native Benc
 
 
 == Changelog ==
+
+= 3.3 on 2020-08-XX =
+
+* Added: new filters for P2C email body title, content, and generated HTML.
+* Added: new filter for switching the email type from drop-down (DD) to Custom.
+* Added: Readme FAQs for the new filters and RSS campaigns.
+* Added: settings descriptions for the less common settings.
+* Updated: post-to-campaign endpoint.
+* Updated: Benchmark connection interface to be cleaner, non AJAX, with links to toggle key fields.
+* Fixed: admin Connect button bad username or password handling.
+* Fixed: Removed UI auth redirection when endpoint contains querystring to workaround a URL encoding API bug.
 
 = 3.2 on 2020-03-12 =
 
