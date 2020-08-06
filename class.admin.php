@@ -92,7 +92,6 @@ class wpbme_admin {
 	// Page Body For Benchmark UI
 	static function page_interface() {
 		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
-		$do_redirect = false;
 
 		// Handle P2C
 		if( ! empty( $_GET['post'] ) && intval( $_GET['post'] ) ) {
@@ -111,7 +110,6 @@ class wpbme_admin {
 			// Successful Email Creation
 			if( intval( $newemail ) > 1 ) {
 				$tab = '/Emails/Details?e=' . $newemail;
-				$do_redirect = true;
 
 			// Failed Email Creation
 			} else {
@@ -153,11 +151,37 @@ class wpbme_admin {
 		$tracker = ucwords( sanitize_title( ltrim( preg_replace( '/\?.*/', '', $tab ), '/' ) ) );
 		wpbme_api::tracker( 'UI-' . $tracker );
 
-		// Get Authenticated Redirect
+		// Get Redirection URL
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
-		if( ! $redirect_url ) { return; }
 
-		// Output
+		// Maybe Get Pre Auth Redirect
+		if( strchr( $tab, '?' ) ) {
+			$redirect_url_auth = wpbme_api::authenticate_ui_redirect( '/Emails/Dashboard' );
+			$redirect_script = sprintf(
+				'
+					bmeui_popup = window.open(
+						\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
+					);
+					setTimeout( function() {
+						bmeui_popup = window.open(
+							\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
+						);
+					}, 3000 );
+				',
+				$redirect_url_auth, $redirect_url
+			);
+		} else {
+			$redirect_script = sprintf(
+				'
+					bmeui_popup = window.open(
+						\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
+					);
+				',
+				$redirect_url
+			);
+		}
+
+		// Output Body
 		printf(
 			'
 				<div class="wrap">
@@ -166,15 +190,15 @@ class wpbme_admin {
 					<p><a class="button-primary" id="bmeui" href="#">%s &rarr;</a></p>
 					<p>%s</p>
 				</div>
-
 				<script>
-				jQuery( document ).ready( function( $ ) {
-					$( "#bmeui" ).click( function() {
-						var left = ( window.screen.width / 2 ) - ( ( 1024 / 2 ) + 10 );
-						var top = ( window.screen.height / 2 ) - ( ( 768 / 2 ) + 50 );
-						window.open( \'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left );
+					var bmeui_popup = false;
+					jQuery( document ).ready( function( $ ) {
+						$( "#bmeui" ).click( function() {
+							var left = ( window.screen.width / 2 ) - ( ( 1024 / 2 ) + 10 );
+							var top = ( window.screen.height / 2 ) - ( ( 768 / 2 ) + 50 );
+							%s
+						} );
 					} );
-				} );
 				</script>
 			',
 			__( 'Benchmark Email Interface', 'benchmark-email-lite' ),
@@ -183,22 +207,8 @@ class wpbme_admin {
 				'Please click the button to open the requested Benchmark interface in a secure pop-up window.',
 				'benchmark-email-lite'
 			),
-			$redirect_url
+			$redirect_script
 		);
-
-		// Handle Email Campaign Redirection
-		if( $do_redirect ) {
-			printf(
-				'
-					<script type="text/javascript">
-					jQuery( document ).ready( function( $ ) {
-						$( "iframe#wpbme_interface" ).attr( "src", "%s" ); 
-					} );
-					</script>
-				',
-				wpbme_api::$url_ui . 'Emails/Edit?e=' . $newemail
-			);
-		}
 	}
 
 	// Displays Shortcodes
