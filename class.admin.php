@@ -163,16 +163,27 @@ class wpbme_admin {
 				<div class="wrap">
 					<h1>%s</h1>
 					<br />
-					<p><a href="%s" target="BMEUI">%s</a></p>
-					<iframe id="wpbme_interface" src="%s" style="%s">%s</iframe>
+					<p><a class="button-primary" id="bmeui" href="#">%s &rarr;</a></p>
+					<p>%s</p>
 				</div>
+
+				<script>
+				jQuery( document ).ready( function( $ ) {
+					$( "#bmeui" ).click( function() {
+						var left = ( window.screen.width / 2 ) - ( ( 1024 / 2 ) + 10 );
+						var top = ( window.screen.height / 2 ) - ( ( 768 / 2 ) + 50 );
+						window.open( \'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left );
+					} );
+				} );
+				</script>
 			',
 			__( 'Benchmark Email Interface', 'benchmark-email-lite' ),
-			$redirect_url,
-			__( 'Click to use a new tab - if the below fails to authenticate properly.', 'benchmark-email-lite' ),
-			$redirect_url,
-			'width: 100%; height: 1000px;',
-			__( 'Loading...', 'benchmark-email-lite' )
+			__( 'Open Benchmark Interface', 'benchmark-email-lite' ),
+			__(
+				'Please click the button to open the requested Benchmark interface in a secure pop-up window.',
+				'benchmark-email-lite'
+			),
+			$redirect_url
 		);
 
 		// Handle Email Campaign Redirection

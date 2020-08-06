@@ -114,8 +114,9 @@ These filter the blog post title, the content body, the email type and generated
 * Added: new filter for switching the email type from drop-down (DD) to Custom.
 * Added: Readme FAQs for the new filters and RSS campaigns.
 * Added: settings descriptions for the less common settings.
+* Updated: Switched the Interface iFrame over to a JS pop-up due to a conflict with browser security blocks.
 * Updated: post-to-campaign endpoint.
-* Updated: Benchmark connection interface to be cleaner, non AJAX, with links to toggle key fields.
+* Updated: Benchmark connection settings to cleaner, non AJAX, links to toggle key fields.
 * Fixed: admin Connect button bad username or password handling.
 * Fixed: Removed UI auth redirection when endpoint contains querystring to workaround a URL encoding API bug.
 
