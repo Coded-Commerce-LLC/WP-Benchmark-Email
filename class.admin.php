@@ -119,7 +119,7 @@ class wpbme_admin {
 				// Failed Due To From Address
 				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
 					$tab = '/ConfirmedEmails';
-					echo sprintf(
+					printf(
 						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
 						__(
 							'Please verify the email address you are signed into WordPress with using the interface below,'
@@ -132,7 +132,7 @@ class wpbme_admin {
 				// Failed Due To Missing List
 				} else if( stristr( $newemail, 'No Contact Lists' ) !== false ) {
 					$tab = '/Contacts';
-					echo sprintf(
+					printf(
 						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
 						__( 'Missing contact list', 'benchmark-email-lite' ),
 						__( 'Sample Contact List', 'benchmark-email-lite' )
@@ -141,7 +141,7 @@ class wpbme_admin {
 				// Other Error
 				} else {
 					$tab = '/Emails/Dashboard';
-					echo sprintf(
+					printf(
 						'<div class="notice notice-error"><p>%s</p></div>',
 						__( 'Error creating email campaign. Please contact support.', 'benchmark-email-lite' )
 					);
@@ -158,7 +158,7 @@ class wpbme_admin {
 		if( ! $redirect_url ) { return; }
 
 		// Output
-		echo sprintf(
+		printf(
 			'
 				<div class="wrap">
 					<h1>%s</h1>
@@ -188,7 +188,7 @@ class wpbme_admin {
 
 		// Handle Email Campaign Redirection
 		if( $do_redirect ) {
-			echo sprintf(
+			printf(
 				'
 					<script type="text/javascript">
 					jQuery( document ).ready( function( $ ) {
@@ -208,7 +208,7 @@ class wpbme_admin {
 
 		// Handle No Forms
 		if( ! $forms ) {
-			echo sprintf(
+			printf(
 				'<p>%s</p>',
 				__( 'Please design a signup form first!', 'benchmark-email-lite' )
 			);
@@ -216,7 +216,7 @@ class wpbme_admin {
 		}
 
 		// Has Forms
-		echo sprintf(
+		printf(
 			'
 				<br /><h1>%s</h1>
 				<p>%s</p>
@@ -228,7 +228,7 @@ class wpbme_admin {
 		// Loop Forms
 		foreach( $forms as $form ) {
 			if( empty( $form->Name ) || empty( $form->ID ) ) { continue; }
-			echo sprintf(
+			printf(
 				'
 					<p style="margin: 2em 0;">
 						<h2>%s</h2>
@@ -242,7 +242,7 @@ class wpbme_admin {
 		}
 
 		// Manage Forms Button
-		echo sprintf(
+		printf(
 			'
 				<p style="margin: 2em 0;">
 					<a href="%s">%s</a><br /><br />

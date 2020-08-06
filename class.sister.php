@@ -67,7 +67,7 @@ add_action( 'admin_notices', function() {
 	// Output Message
 	if( $messages ) {
 		foreach( $messages as $message ) {
-			echo sprintf(
+			printf(
 				'<div class="notice notice-info is-dismissible"><p>%s</p></div>',
 				print_r( $message, true )
 			);

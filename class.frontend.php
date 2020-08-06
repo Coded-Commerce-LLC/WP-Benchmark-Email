@@ -20,7 +20,7 @@ add_action( 'wp_footer', function() {
 	if( ! $wpbme_ap_token ) { return; }
 
 	// Output Tracker JS
-	echo sprintf(
+	printf(
 		'
 			<script type="text/javascript">
 			var _paq = _paq || [];

@@ -24,7 +24,7 @@ class wpbme_widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
-			echo sprintf(
+			printf(
 				'%s%s%s',
 				$args['before_title'],
 				apply_filters( 'widget_title', $instance['title'] ),
@@ -41,7 +41,7 @@ class wpbme_widget extends WP_Widget {
 	public function form( $instance ) {
 
 		// Title Field
-		echo sprintf(
+		printf(
 			'
 				<p>
 					<label for="%s">%s</label> 
@@ -71,7 +71,7 @@ class wpbme_widget extends WP_Widget {
 
 		// Handle No Existing Forms
 		if( ! $options ) {
-			echo sprintf(
+			printf(
 				'<p>%s</p>',
 				__( 'Please design a signup form first!', 'benchmark-email-lite' )
 			);
@@ -85,14 +85,14 @@ class wpbme_widget extends WP_Widget {
 			__( 'Please Select', 'benchmark-email-lite' ),
 			$options
 		);
-		echo sprintf(
+		printf(
 			'<p><label for="%s">%s</label></p>',
 			esc_attr( $this->get_field_id( 'post_id' ) ),
 			$dropdown
 		);
 
 		// Manage Forms Button
-		echo sprintf(
+		printf(
 			'
 				<p>
 					<a href="%s">%s</a><br /><br />
