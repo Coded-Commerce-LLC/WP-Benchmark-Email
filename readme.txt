@@ -55,7 +55,7 @@ With the Benchmark Email Lite plugin, you can quickly and easily place a signup 
 
 = Initial setup =
 
-1. If you are creating a new Benchmark Email account, [get a FREE account here](https://www.benchmarkemail.com?p=68907 "get a FREE Benchmark Email account!").
+1. If you are creating a new Benchmark Email account, [get a FREE account here](https://ui.benchmarkemail.com/register?p=68907 "get a FREE Benchmark Email account!").
 2. In your WordPress admin panel, go to Benchmark > Settings.
 3. Click "Connect to Benchmark".
 4. Enter your Benchmark Email username and click "OK".

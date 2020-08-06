@@ -101,7 +101,7 @@ class wpbme_settings {
 
 					<h2><?php _e( 'Connect to Benchmark', 'benchmark-email-lite' ); ?></h2>
 					<p>
-						<a href="https://www.benchmarkemail.com?p=68907" target="_blank">
+						<a href="https://ui.benchmarkemail.com/register?p=68907" target="_blank">
 							<?php _e( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' ); ?>
 						</a>
 					</p>
