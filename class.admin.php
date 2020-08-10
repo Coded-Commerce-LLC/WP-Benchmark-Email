@@ -34,23 +34,24 @@ add_action( 'admin_menu', function() {
 	$wpbme_key = get_option( 'wpbme_key' );
 	$wpbme_temp_token = get_option( 'wpbme_temp_token' );
 
-	// Main Menu Item
-	$default_panel = $wpbme_temp_token ?  'wpbme_interface' : 'wpbme_settings';
-	add_menu_page(
-		'Benchmark', 'Benchmark', 'manage_options', $default_panel,
-		[ 'wpbme_admin', 'page_interface' ], 'dashicons-email'
-	);
+	// Menus When Not Connected
+	if( ! $wpbme_key || ! $wpbme_temp_token ) {
+		add_menu_page(
+			'Benchmark', 'Benchmark', 'manage_options', 'wpbme_settings',
+			[ 'wpbme_settings', 'page_settings' ], 'dashicons-email'
+		);
+	}
 
-	// UI Panel When UI Authenticated
-	if( $wpbme_temp_token ) {
+	// Menus When Connected
+	else {
+		add_menu_page(
+			'Benchmark', 'Benchmark', 'manage_options', 'wpbme_interface',
+			[ 'wpbme_admin', 'page_interface' ], 'dashicons-email'
+		);
 		add_submenu_page(
 			'wpbme_interface', 'Interface', 'Interface', 'manage_options',
 			'wpbme_interface', [ 'wpbme_admin', 'page_interface' ]
 		);
-	}
-
-	// Signup Panels When API Authenticated
-	if( $wpbme_key ) {
 		add_submenu_page(
 			'wpbme_interface', 'Signup Form Widgets', 'Signup Form Widgets',
 			'manage_options', 'widgets.php'
@@ -59,13 +60,11 @@ add_action( 'admin_menu', function() {
 			'wpbme_interface', 'Shortcodes', 'Shortcodes', 'manage_options',
 			'wpbme_shortcodes', [ 'wpbme_admin', 'page_shortcodes' ]
 		);
+		add_submenu_page(
+			'wpbme_interface', 'Settings', 'Settings', 'manage_options',
+			'wpbme_settings', [ 'wpbme_settings', 'page_settings' ]
+		);
 	}
-
-	// Settings Panel
-	add_submenu_page(
-		'wpbme_interface', 'Settings', 'Settings', 'manage_options',
-		'wpbme_settings', [ 'wpbme_settings', 'page_settings' ]
-	);
 
 } );
 
