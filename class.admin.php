@@ -4,7 +4,9 @@
 if( ! defined( 'ABSPATH' ) ) { exit; }
 
 // Plugins Page Link To Settings
-add_filter( 'plugin_action_links_benchmark-email-lite/benchmark-email-lite.php', function( $links ) {
+add_filter(
+	'plugin_action_links_benchmark-email-lite/benchmark-email-lite.php',
+	function( $links ) {
 	$settings = [
 		'settings' => sprintf(
 			'<a href="%s">%s</a>',
@@ -35,53 +37,34 @@ add_action( 'admin_menu', function() {
 	// Main Menu Item
 	$default_panel = $wpbme_temp_token ?  'wpbme_interface' : 'wpbme_settings';
 	add_menu_page(
-		'Benchmark',
-		'Benchmark',
-		'manage_options',
-		$default_panel,
-		[ 'wpbme_admin', 'page_interface' ],
-		'dashicons-email'
+		'Benchmark', 'Benchmark', 'manage_options', $default_panel,
+		[ 'wpbme_admin', 'page_interface' ], 'dashicons-email'
 	);
 
 	// UI Panel When UI Authenticated
 	if( $wpbme_temp_token ) {
 		add_submenu_page(
-			'wpbme_interface',
-			'Interface',
-			'Interface',
-			'manage_options',
-			'wpbme_interface',
-			[ 'wpbme_admin', 'page_interface' ]
+			'wpbme_interface', 'Interface', 'Interface', 'manage_options',
+			'wpbme_interface', [ 'wpbme_admin', 'page_interface' ]
 		);
 	}
 
 	// Signup Panels When API Authenticated
 	if( $wpbme_key ) {
 		add_submenu_page(
-			'wpbme_interface',
-			'Signup Form Widgets',
-			'Signup Form Widgets',
-			'manage_options',
-			'widgets.php'
+			'wpbme_interface', 'Signup Form Widgets', 'Signup Form Widgets',
+			'manage_options', 'widgets.php'
 		);
 		add_submenu_page(
-			'wpbme_interface',
-			'Shortcodes',
-			'Shortcodes',
-			'manage_options',
-			'wpbme_shortcodes',
-			[ 'wpbme_admin', 'page_shortcodes' ]
+			'wpbme_interface', 'Shortcodes', 'Shortcodes', 'manage_options',
+			'wpbme_shortcodes', [ 'wpbme_admin', 'page_shortcodes' ]
 		);
 	}
 
 	// Settings Panel
 	add_submenu_page(
-		'wpbme_interface',
-		'Settings',
-		'Settings',
-		'manage_options',
-		'wpbme_settings',
-		[ 'wpbme_settings', 'page_settings' ]
+		'wpbme_interface', 'Settings', 'Settings', 'manage_options',
+		'wpbme_settings', [ 'wpbme_settings', 'page_settings' ]
 	);
 
 } );
@@ -120,8 +103,8 @@ class wpbme_admin {
 					printf(
 						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
 						__(
-							'Please verify the email address you are signed into WordPress with using the interface below,'
-							. ' then re-attempt creating your email.',
+							'Please verify the email address you are signed into WordPress with'
+							. ' using the interface below, then re-attempt creating your email.',
 							'benchmark-email-lite'
 						),
 						$current_user->user_email
@@ -141,7 +124,10 @@ class wpbme_admin {
 					$tab = '/Emails/Dashboard';
 					printf(
 						'<div class="notice notice-error"><p>%s</p></div>',
-						__( 'Error creating email campaign. Please contact support.', 'benchmark-email-lite' )
+						__(
+							'Error creating email campaign. Please contact support.',
+							'benchmark-email-lite'
+						)
 					);
 				}
 			}
