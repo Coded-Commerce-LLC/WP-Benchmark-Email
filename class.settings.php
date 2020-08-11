@@ -66,6 +66,12 @@ class wpbme_settings {
 			<br />
 
 			<form name="wbme_settings_form" method="post" action="">
+				<h2><?php _e( 'Benchmark connection', 'benchmark-email-lite' ); ?></h2>
+				<p>
+					<a href="https://ui.benchmarkemail.com/register?p=68907" target="_blank">
+						<?php _e( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' ); ?>
+					</a>
+				</p>
 
 				<?php
 
@@ -99,12 +105,6 @@ class wpbme_settings {
 						</div>
 					<?php } ?>
 
-					<h2><?php _e( 'Connect to Benchmark', 'benchmark-email-lite' ); ?></h2>
-					<p>
-						<a href="https://ui.benchmarkemail.com/register?p=68907" target="_blank">
-							<?php _e( 'Get a FREE Benchmark Email account!', 'benchmark-email-lite' ); ?>
-						</a>
-					</p>
 					<p>
 						<label style="display: block;">
 							<?php _e( 'Benchmark Username', 'benchmark-email-lite' ); ?><br />
@@ -148,8 +148,6 @@ class wpbme_settings {
 					$wpbme_tracking_disable = get_option( 'wpbme_tracking_disable' );
 					$wpbme_usage_disable = get_option( 'wpbme_usage_disable' );
 					?>
-
-					<h2><?php _e( 'Benchmark connection settings', 'benchmark-email-lite' ); ?></h2>
 
 					<?php if( ! get_option( 'wpbme_key' ) ) { ?>
 					<p>
