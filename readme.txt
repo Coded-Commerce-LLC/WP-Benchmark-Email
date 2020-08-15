@@ -5,7 +5,7 @@ Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact for
 Requires at least: 4.9.15
 Requires PHP: 7.2
 Tested up to: 5.5
-Stable tag: 3.2
+Stable tag: 3.3
 License: GPLv2 (or later)
 
 Your Wordpress Site and Email Marketing all in one place!
@@ -108,7 +108,7 @@ These filter the blog post title, the content body, the email type and generated
 
 == Changelog ==
 
-= 3.3 on 2020-08-XX =
+= 3.3 on 2020-08-14 =
 
 * Added: new filters for P2C email body title, content, and generated HTML.
 * Added: new filter for switching the email type from drop-down (DD) to Custom.
