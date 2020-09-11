@@ -60,12 +60,27 @@ class wpbme_frontend {
 
 	// Renders Signup Form
 	static function get_signup_form( $form_id ) {
-		$formdata = get_transient( 'wpbme_js_' . $form_id );
+
+		// Pull Signup Form From Cache
+		$option_name = 'wpbme_js_' . $form_id;
+		$formdata = get_transient( $option_name );
 		if( $formdata ) {
 			return $formdata->JSCode;
 		}
-		$form = wpbme_api::get_form_data( $form_id );
-		set_transient( 'wpbme_js_' . $form_id, $form, 86400 );
-		return $form->JSCode;
+
+		// Pull Signup Form From API
+		$formdata = wpbme_api::get_form_data( $form_id );
+		if( empty( $formdata->JSCode ) ) {
+			return sprintf(
+				'<p>%s</p>',
+				__( 'There was an error obtaining the Benchmark signup form.', 'benchmark-email-lite' )
+			);
+		}
+
+		// Save Signup Form To Cache
+		set_transient( $option_name, $formdata, 14400 );
+
+		// Return Signup Form
+		return $formdata->JSCode;
 	}
 }
