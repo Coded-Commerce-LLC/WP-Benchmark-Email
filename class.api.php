@@ -179,10 +179,10 @@ class wpbme_api {
 	}
 
 	// Creates Email Campaign
-	static function create_email( $name, $subject, $from_name, $from_email, $post_id ) {
+	static function create_email( $name, $subject, $from_name, $from_email, $email_html, $post ) {
 
 		// Start Setting-up Email Campaign
-		$body = [
+		$args = [
 			'Detail' => [
 				'ContactLists' => [],
 				'EmailType' => '',
@@ -216,37 +216,15 @@ class wpbme_api {
 				$to_lists[] = [ 'ID' => $list->ID ];
 			}
 		}
-		$body['Detail']['ContactLists'] = $to_lists;
+		$args['Detail']['ContactLists'] = $to_lists;
 
 		// Handle No Lists Found
 		if( ! $to_lists ) { return 'No Contact Lists'; }
 
 		// Create Email Campaign
-		$response = wpbme_api::benchmark_query( 'Emails/', 'POST', $body );
+		$response = wpbme_api::benchmark_query( 'Emails/', 'POST', $args );
 		$emailID = empty( $response->ID ) ? '' : intval( $response->ID );
 		if( ! $emailID ) { return $response; }
-
-		// Get WP Post
-		$post = get_post( $post_id );
-
-		// Assemble Post Body
-		$post_title = '';
-		$post_content = '';
-		if( $post ) {
-			$post_title = $post->post_title;
-			$post_content = apply_filters( 'the_content', $post->post_content );
-		}
-		$email_html = sprintf(
-			'
-				<h1>%s</h1>
-				<div>%s</div>
-				<p><a href="%s" target="_blank">%s</a></p>
-			',
-			apply_filters( 'wpbme_post_title', $post_title, $post ),
-			apply_filters( 'wpbme_post_content', $post_content, $post ),
-			get_permalink( $post_id ),
-			__( 'Read more', 'benchmark-email-lite' )
-		);
 
 		// Get Format
 		$wpbme_email_type = apply_filters( 'wpbme_email_type', 'DD', $post );
@@ -258,11 +236,11 @@ class wpbme_api {
 			case 'Custom':
 				$email_html = sprintf( '<html><body>%s</body></html>', $email_html );
 				$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
-				$body['Detail']['EmailType'] = 'Custom';
-				$body['Detail']['TemplateCode'] = $email_html;
-				$body['Detail']['TemplateContent'] = $email_html; 
-				$body['Detail']['TemplateID'] = -1;
-				$body['Detail']['Version'] = 402;
+				$args['Detail']['EmailType'] = 'Custom';
+				$args['Detail']['TemplateCode'] = $email_html;
+				$args['Detail']['TemplateContent'] = $email_html; 
+				$args['Detail']['TemplateID'] = -1;
+				$args['Detail']['Version'] = 402;
 				break;
 
 			// Default Drag/Drop Editing
@@ -278,19 +256,19 @@ class wpbme_api {
 				// Set Content To Drag And Drop Template
 				$email_html = apply_filters( 'wpbme_email_html', $email_html, $post );
 				$TemplateContent = str_replace( '#RSSCONTENT#', $email_html, $TemplateContent );
-				$body['Detail']['EmailType'] = 'DD';
-				$body['Detail']['LayoutID'] = 10;
-				$body['Detail']['TemplateContent'] = $TemplateContent;
+				$args['Detail']['EmailType'] = 'DD';
+				$args['Detail']['LayoutID'] = 10;
+				$args['Detail']['TemplateContent'] = $TemplateContent;
 
-				//$body['Detail']['HasPermissionReminderMessage'] = 1;
-				//$body['Detail']['IsRSS'] = 1;
-				//$body['Detail']['RSSURL'] = strstr( get_permalink( $post_id ), 'localhost' )
+				//$args['Detail']['HasPermissionReminderMessage'] = 1;
+				//$args['Detail']['IsRSS'] = 1;
+				//$args['Detail']['RSSURL'] = strstr( get_permalink( $post->ID ), 'localhost' )
 				//		? 'http://woocommerce.com/blog/feed/?withoutcomments=1'
-				//		: get_permalink( $post_id ) . 'feed/?withoutcomments=1';
+				//		: get_permalink( $post->ID ) . 'feed/?withoutcomments=1';
 		}
 
 		// Apply Template To Email Campaign
-		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $body );
+		$response = wpbme_api::benchmark_query( 'Emails/' . $emailID, 'PATCH', $args );
 
 		// Return Int
 		return $emailID;

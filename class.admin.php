@@ -17,15 +17,49 @@ add_filter(
 	return array_merge( $settings, $links );
 } );
 
-// Post To Campaign
+// Post To Campaign - Post Rows
 add_filter( 'post_row_actions', function( $actions, $post ) {
 	$actions['benchmark_p2c'] = sprintf(
 		'<a href="%s">%s</a>',
-		admin_url( 'admin.php?page=wpbme_interface&post=' . $post->ID ),
-		__( 'Create Email Campaign', 'benchmark-email-lite' )
+		admin_url( 'admin.php?page=wpbme_interface&post_ids[]=' . $post->ID ),
+		__( 'Create email campaign', 'benchmark-email-lite' )
 	);
 	return $actions;
 }, 10, 2 );
+
+// Post To Campaign - Bulk Action
+add_filter( 'bulk_actions-edit-post', function( $actions ) {
+	$actions['wpbme_post_campaign'] = __( 'Create email campaign', 'benchmark-email-lite' );
+	return $actions;
+}, 20 );
+
+add_filter( 'handle_bulk_actions-edit-post', function( $redirect_to, $action, $post_ids ) {
+	if( $action !== 'wpbme_post_campaign' ) {
+		return $redirect_to;
+	}
+	$querystring = '';
+	foreach( $post_ids as $post_id ) {
+		$querystring .= '&post_ids[]=' . $post_id;
+	}
+	return '/wp-admin/admin.php?page=wpbme_interface' . $querystring;
+}, 10, 3 );
+
+// Post To Campaign - Bulk Action - Response Message
+add_action( 'admin_notices', function() {
+	if ( ! empty( $_REQUEST['wpbme_post_campaign'] ) ) {
+		printf(
+			'
+				<div id="message" class="updated">
+					<p>%s</p>
+				</div>
+			',
+			sprintf(
+				__( 'Setup %d post(s) in a new campaign.', 'benchmark-email-lite' ),
+				intval( $_REQUEST['wpbme_post_campaign'] )
+			)
+		);
+	}
+} );
 
 // Adds UI Controller Page
 add_action( 'admin_menu', function() {
@@ -75,95 +109,35 @@ class wpbme_admin {
 	static function page_interface() {
 		$tab = empty( $_GET['tab'] ) ? '/Emails/Dashboard' : '/' . $_GET['tab'];
 
-		// Handle P2C
-		if( ! empty( $_GET['post'] ) && intval( $_GET['post'] ) ) {
-			$current_user = wp_get_current_user();
-			$post = get_post( $_GET['post'] );
-			$content = $post->post_content;
-			$content = apply_filters( 'the_content', $content );
-			$newemail = wpbme_api::create_email(
-				$post->post_title . ' ' . current_time( 'mysql' ),
-				$post->post_title,
-				$current_user->display_name,
-				$current_user->user_email,
-				$post->ID
-			);
-
-			// Successful Email Creation
-			if( intval( $newemail ) > 1 ) {
-				$tab = '/Emails/Details?e=' . $newemail;
-
-			// Failed Email Creation
-			} else {
-
-				// Failed Due To From Address
-				if( stristr( $newemail, 'Email Invalid' ) !== false ) {
-					$tab = '/ConfirmedEmails';
-					printf(
-						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
-						__(
-							'Please verify the email address you are signed into WordPress with'
-							. ' using the interface below, then re-attempt creating your email.',
-							'benchmark-email-lite'
-						),
-						$current_user->user_email
-					);
-
-				// Failed Due To Missing List
-				} else if( stristr( $newemail, 'No Contact Lists' ) !== false ) {
-					$tab = '/Contacts';
-					printf(
-						'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
-						__( 'Missing contact list', 'benchmark-email-lite' ),
-						__( 'Sample Contact List', 'benchmark-email-lite' )
-					);
-
-				// Other Error
-				} else {
-					$tab = '/Emails/Dashboard';
-					printf(
-						'<div class="notice notice-error"><p>%s</p></div>',
-						__(
-							'Error creating email campaign. Please contact support.',
-							'benchmark-email-lite'
-						)
-					);
-				}
-			}
+		// Handle P2C Requests
+		if( ! empty( $_GET['post_ids'] ) ) {
+			$tab = self::setup_campaign( $_GET['post_ids'] );
 		}
 
 		// Developer Analytics
 		$tracker = ucwords( sanitize_title( ltrim( preg_replace( '/\?.*/', '', $tab ), '/' ) ) );
 		wpbme_api::tracker( 'UI-' . $tracker );
 
-		// Get Redirection URL
+		// Get Redirection Vars
 		$redirect_url = wpbme_api::authenticate_ui_redirect( $tab );
+		$redirect_script = '';
 
-		// Maybe Get Pre Auth Redirect
-		if( strchr( $tab, '?' ) ) {
-			$redirect_url_auth = wpbme_api::authenticate_ui_redirect( '/Emails/Dashboard' );
+		// When Querystring Is Involved
+		if( strstr( $tab, '?' ) ) {
+
+			// Set Three Second Timeout For Redirection
 			$redirect_script = sprintf(
 				'
-					bmeui_popup = window.open(
-						\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
-					);
 					setTimeout( function() {
 						bmeui_popup = window.open(
 							\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
 						);
 					}, 3000 );
-				',
-				$redirect_url_auth, $redirect_url
+				', $redirect_url
 			);
-		} else {
-			$redirect_script = sprintf(
-				'
-					bmeui_popup = window.open(
-						\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
-					);
-				',
-				$redirect_url
-			);
+
+			// Overload Initial Redirect As Session Authentication
+			$redirect_url = wpbme_api::authenticate_ui_redirect( '/Emails/Dashboard' );
 		}
 
 		// Output Body
@@ -181,6 +155,9 @@ class wpbme_admin {
 						$( "#bmeui" ).click( function() {
 							var left = ( window.screen.width / 2 ) - ( ( 1024 / 2 ) + 10 );
 							var top = ( window.screen.height / 2 ) - ( ( 768 / 2 ) + 50 );
+							bmeui_popup = window.open(
+								\'%s\', \'bmeui\', \'width=1024,height=768,top=\' + top + \',left=\' + left
+							);
 							%s
 						} );
 					} );
@@ -191,8 +168,7 @@ class wpbme_admin {
 			__(
 				'Please click the button to open the requested Benchmark interface in a secure pop-up window.',
 				'benchmark-email-lite'
-			),
-			$redirect_script
+			), $redirect_url, $redirect_script
 		);
 	}
 
@@ -253,4 +229,101 @@ class wpbme_admin {
 			__( 'Manage All Signup Forms', 'benchmark-email-lite' )
 		);
 	}
+
+	// Post-to-Campaign Assembly
+	static function setup_campaign( $post_ids ) {
+
+		// Variables
+		$email_html = '';
+		$email_name = sprintf(
+			'%s %s',
+			__( 'Benchmark Email Lite', 'benchmark-emaik-lite' ),
+			current_time( 'mysql' )
+		);
+
+		// Loop Posts - Assemble Email Body
+		foreach( $post_ids as $post_id ) {
+			$post = get_post( $post_id );
+			if( ! $post ) { continue; }
+			$post_content = apply_filters( 'the_content', $post->post_content );
+			$email_subject = $post->post_title;
+			$email_html .= sprintf(
+				'
+					<h1>%s</h1>
+					<div>%s</div>
+					<p><a href="%s" target="_blank">%s</a></p>
+				',
+				apply_filters( 'wpbme_post_title', $email_subject, $post ),
+				apply_filters( 'wpbme_post_content', $post_content, $post ),
+				get_permalink( $post_id ),
+				__( 'Read more', 'benchmark-email-lite' )
+			);
+		}
+
+		// Multiple Posts
+		if( sizeof( $post_ids ) > 1 ) {
+			$post = ( object ) [ ];
+			$email_subject = $email_name;
+		}
+
+		// Create New Email Campaign
+		$current_user = wp_get_current_user();
+		$newemail = wpbme_api::create_email(
+			$email_name,
+			$email_subject,
+			$current_user->display_name,
+			$current_user->user_email,
+			$email_html,
+			$post
+		);
+
+		// Successful Email Creation
+		if( intval( $newemail ) > 1 ) {
+			$tab = '/Emails/Details?e=' . $newemail;
+		}
+
+		// Failed Email Creation
+		else {
+
+			// Failed Due To From Address
+			if( stristr( $newemail, 'Email Invalid' ) !== false ) {
+				$tab = '/ConfirmedEmails';
+				printf(
+					'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
+					__(
+						'Please verify the email address you are signed into WordPress with'
+						. ' using the interface below, then re-attempt creating your email.',
+						'benchmark-email-lite'
+					),
+					$current_user->user_email
+				);
+			}
+
+			// Failed Due To Missing List
+			else if( stristr( $newemail, 'No Contact Lists' ) !== false ) {
+				$tab = '/Contacts';
+				printf(
+					'<div class="notice notice-error"><p>%s <strong>%s</strong></p></div>',
+					__( 'Missing contact list', 'benchmark-email-lite' ),
+					__( 'Sample Contact List', 'benchmark-email-lite' )
+				);
+			}
+
+			// Other Error
+			else {
+				$tab = '/Emails/Dashboard';
+				printf(
+					'<div class="notice notice-error"><p>%s</p></div>',
+					__(
+						'Error creating email campaign. Please contact support.',
+						'benchmark-email-lite'
+					)
+				);
+			}
+		}
+
+		// Return Redirection
+		return $tab;
+	}
+
 }
