@@ -2,9 +2,9 @@
 Contributors: seanconklin, randywsandberg
 Donate link: https://codedcommerce.com/donate
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
-Requires at least: 4.9.15
+Requires at least: 4.9.16
 Requires PHP: 7.2
-Tested up to: 5.5
+Tested up to: 5.6
 Stable tag: 3.3
 License: GPLv2 (or later)
 
@@ -107,6 +107,11 @@ These filter the blog post title, the content body, the email type and generated
 
 
 == Changelog ==
+
+= 3.4 on TBA =
+
+* Added: new Bulk Action feature to be able to send multiple selected posts in one campaign.
+* Fixed: saving of signup form transient when data from API is an error.
 
 = 3.3 on 2020-08-14 =
 
