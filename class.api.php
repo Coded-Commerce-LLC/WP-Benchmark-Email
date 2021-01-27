@@ -33,7 +33,7 @@ class wpbme_api {
 
 	// Get All Signup Forms
 	static function get_forms() {
-		return self::benchmark_query( 'SignupForm/' );
+		return self::benchmark_query( 'SignupForm/?PageSize=100' );
 	}
 
 	// Get JS Link For Signup Form

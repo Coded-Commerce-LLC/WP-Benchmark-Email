@@ -111,6 +111,7 @@ These filter the blog post title, the content body, the email type and generated
 = 3.4 on TBA =
 
 * Added: new Bulk Action feature to be able to send multiple selected posts in one campaign.
+* Changed: signup form query was returning 10 max results, increased to 100.
 * Fixed: saving of signup form transient when data from API is an error.
 
 = 3.3 on 2020-08-14 =
