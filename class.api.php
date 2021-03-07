@@ -398,8 +398,6 @@ class wpbme_api {
 
 		// Handle Error
 		if( empty( $response->Response->Token ) ) {
-			delete_option( 'wpbme_temp_token' );
-			delete_option( 'wpbme_temp_token_ttl' );
 			return;
 		}
 
