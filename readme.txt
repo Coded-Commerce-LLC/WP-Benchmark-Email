@@ -4,7 +4,7 @@ Donate link: https://codedcommerce.com/donate
 Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact form, contact forms, contacts, email, email blast, emails, email marketing, form, forms, html, join, list, lists, mail, mailing, mailing list, mailing lists, mailings, newsletter, newsletters, portuguese, register, registration, responsive, responsive emails, sign up, signup form, sidebar, spanish, widget, widgets, woocommerce
 Requires at least: 4.9.16
 Requires PHP: 7.2
-Tested up to: 5.6
+Tested up to: 5.7
 Stable tag: 3.3
 License: GPLv2 (or later)
 
