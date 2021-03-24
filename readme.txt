@@ -5,7 +5,7 @@ Tags: api, benchmark, benchmark email, campaign, campaigns, chinese, contact for
 Requires at least: 4.9.16
 Requires PHP: 7.2
 Tested up to: 5.7
-Stable tag: 3.3
+Stable tag: 3.4
 License: GPLv2 (or later)
 
 Your Wordpress Site and Email Marketing all in one place!
@@ -108,11 +108,12 @@ These filter the blog post title, the content body, the email type and generated
 
 == Changelog ==
 
-= 3.4 on TBA =
+= 3.4 on 2021-03-24 =
 
 * Added: new Bulk Action feature to be able to send multiple selected posts in one campaign.
 * Changed: signup form query was returning 10 max results, increased to 100.
 * Fixed: saving of signup form transient when data from API is an error.
+* Fixed: remove the clearing of UI token when Benchmark server response is bad.
 
 = 3.3 on 2020-08-14 =
 
